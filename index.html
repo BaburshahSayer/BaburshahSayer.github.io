@@ -3,54 +3,30 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Portfolio" />
+    <meta name="description" content="AI Portfolio" />
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap"
-      rel="stylesheet"
-    />
-    <script
-      src="https://kit.fontawesome.com/fa62c117c7.js"
-      crossorigin="anonymous"
-    ></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet" />
+    <script src="https://kit.fontawesome.com/fa62c117c7.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="styles.css" />
-    <title>Babur Shah Sayer</title>
+    <title>Babur Shah Sayer – AI Portfolio</title>
   </head>
   <body class="light" id="top">
     <header class="header center">
       <h3>
-        <a href="https://github.com/BaburshahSayer" class="link"
-          >BSS.</a
-        >
+        <a href="https://github.com/BaburshahSayer" class="link">BSS.</a>
       </h3>
 
       <nav class="nav center">
         <ul class="nav__list center">
-          <li class="nav__list-item">
-            <a class="link link--nav" href="#projects">Projects</a>
-          </li>
-          <li class="nav__list-item">
-            <a class="link link--nav" href="#skills">Skills</a>
-          </li>
-
-          <li class="nav__list-item">
-            <a class="link link--nav" href="#contact">Contact</a>
-          </li>
+          <li class="nav__list-item"><a class="link link--nav" href="#projects">Projects</a></li>
+          <li class="nav__list-item"><a class="link link--nav" href="#skills">Skills</a></li>
+          <li class="nav__list-item"><a class="link link--nav" href="#contact">Contact</a></li>
         </ul>
 
-        <button type="button" aria-label="toggle theme" class="btn btn--icon">
-          <i aria-hidden="true" id="btn-theme" class="fas fa-moon"></i>
-        </button>
-
-        <button
-          type="button"
-          aria-label="toggle navigation"
-          class="btn btn--icon nav__hamburger"
-        >
-          <i aria-hidden="true" class="fas fa-bars"></i>
-        </button>
+        <button type="button" aria-label="toggle theme" class="btn btn--icon"><i aria-hidden="true" id="btn-theme" class="fas fa-moon"></i></button>
+        <button type="button" aria-label="toggle navigation" class="btn btn--icon nav__hamburger"><i aria-hidden="true" class="fas fa-bars"></i></button>
       </nav>
     </header>
 
@@ -58,26 +34,16 @@
       <!-- About -->
       <div class="about center">
         <h1>Hi, I am <span class="about__name">Babur Shah Sayer.</span></h1>
-        <h2 class="about__role">A Full Stack Developer.</h2>
+        <h2 class="about__role">AI & Data Researcher (MSc AI Student)</h2>
         <p class="about__desc">
-          I am a Full-Stack Developer with 3+ years of experience in building secure, high-performance web applications using PHP, Laravel, and JavaScript. 
+          I'm a postgraduate AI student at the University of Essex with a focus on deep learning, data analysis, and simulation-based modeling. I’m passionate about applying machine learning to real-world challenges — from climate risk to financial systems — and building structured, usable datasets for intelligent applications.
         </p>
 
         <div class="about__contact center">
-          
-          <a
-            href="https://github.com/BaburshahSayer"
-            aria-label="github"
-            class="link link--icon"
-          >
+          <a href="https://github.com/BaburshahSayer" aria-label="github" class="link link--icon">
             <i aria-hidden="true" class="fab fa-github"></i>
           </a>
-
-          <a
-            href="hhttps://www.linkedin.com/in/babur-shah-sayer-79b0161b1/"
-            aria-label="linkedin"
-            class="link link--icon"
-          >
+          <a href="https://www.linkedin.com/in/babur-shah-sayer-79b0161b1/" aria-label="linkedin" class="link link--icon">
             <i aria-hidden="true" class="fab fa-linkedin"></i>
           </a>
         </div>
@@ -87,72 +53,37 @@
       <section id="projects" class="section projects">
         <h2 class="section__title">Projects</h2>
         <div class="projects__grid">
+
           <div class="project">
-            <h3>Day Maker</h3>
+            <h3>Real-Time Object Detection</h3>
             <p class="project__description">
-              Day Maker is a powerful daily task management web app built with Laravel, designed to help users stay organized and boost productivity. 
+              Developed a deep learning-based real-time object detection system using PyTorch and OpenCV. Processed and annotated video datasets, integrated SQL backend, and evaluated model robustness in dynamic environments.
             </p>
             <ul class="project__stack">
-              <li class="project__stack-item">Laravel</li>
-              <li class="project__stack-item">PHP</li>
-              <li class="project__stack-item">MySQL</li>
+              <li class="project__stack-item">PyTorch</li>
+              <li class="project__stack-item">OpenCV</li>
+              <li class="project__stack-item">SQL</li>
             </ul>
-
-            <a
-              href="https://github.com/BaburshahSayer/day-maker-task_management"
-              aria-label="source code"
-              class="link link--icon"
-            >
+            <a href="https://github.com/BaburshahSayer/Real-Time-Object-Detection" aria-label="source code" class="link link--icon">
               <i aria-hidden="true" class="fab fa-github"></i>
-            </a>
-              <i aria-hidden="true" class="fas fa-external-link-alt"></i>
             </a>
           </div>
 
           <div class="project">
-            <h3>Score Board</h3>
+            <h3>Data Analytics Dashboard</h3>
             <p class="project__description">
-              The Scoreboard app makes it simple to keep track of your favorite games' and competitions' score points.
+              Built analytics features into a full-stack system using SQL and backend scripting. Created visualizations and reports to support internal decision-making.
             </p>
             <ul class="project__stack">
-              <li class="project__stack-item">Javascript</li>
-              <li class="project__stack-item">HTML</li>
-              <li class="project__stack-item">CSS</li>
+              <li class="project__stack-item">SQL</li>
+              <li class="project__stack-item">Excel</li>
+              <li class="project__stack-item">Laravel (legacy)</li>
             </ul>
-
-            <a
-              href="https://github.com/BaburshahSayer/scoreboard"
-              aria-label="source code"
-              class="link link--icon"
-            >
+            <a href="https://github.com/BaburshahSayer" aria-label="source code" class="link link--icon">
               <i aria-hidden="true" class="fab fa-github"></i>
-            </a>
-
-              <i aria-hidden="true" class="fas fa-external-link-alt"></i>
             </a>
           </div>
 
-          <div class="project">
-            <h3>Travel journal</h3>
-            <p class="project__description">
-              My Travel Journal is a modern travel diary web app, built with React.js, designed for travelers to document and reflect on their journeys. 
-            </p>
-            <ul class="project__stack">
-              <li class="project__stack-item">React.js</li>
-              <li class="project__stack-item">JavaScript</li>
-              <li class="project__stack-item">Bootstrap</li>
-            </ul>
-
-            <a
-              href="https://github.com/BaburshahSayer/Travel-Journal-using-React."
-              aria-label="source code"
-              class="link link--icon"
-            >
-              <i aria-hidden="true" class="fab fa-github"></i>
-            </a>
-              <i aria-hidden="true" class="fas fa-external-link-alt"></i>
-            </a>
-          </div>
         </div>
       </section>
 
@@ -160,18 +91,17 @@
       <section class="section skills" id="skills">
         <h2 class="section__title">Skills</h2>
         <ul class="skills__list">
-          <li class="skills__list-item btn btn--plain">PHP</li>
-          <li class="skills__list-item btn btn--plain">Laravel</li>
-          <li class="skills__list-item btn btn--plain">JavaScript</li>
-          <li class="skills__list-item btn btn--plain">React.js</li>
-          <li class="skills__list-item btn btn--plain">WordPress development</li>
-          <li class="skills__list-item btn btn--plain">RESTful APIs</li>
-          <li class="skills__list-item btn btn--plain">MySQL</li>
-          <li class="skills__list-item btn btn--plain">Agile</li>
-          <li class="skills__list-item btn btn--plain">UI/UX</li>
-          <li class="skills__list-item btn btn--plain">LAMP stack</li>
-          <li class="skills__list-item btn btn--plain">Figma</li>
-          <li class="skills__list-item btn btn--plain">Adobe Photoshop</li>
+          <li class="skills__list-item btn btn--plain">Python</li>
+          <li class="skills__list-item btn btn--plain">PyTorch</li>
+          <li class="skills__list-item btn btn--plain">OpenCV</li>
+          <li class="skills__list-item btn btn--plain">SQL</li>
+          <li class="skills__list-item btn btn--plain">Pandas</li>
+          <li class="skills__list-item btn btn--plain">NumPy</li>
+          <li class="skills__list-item btn btn--plain">EDA</li>
+          <li class="skills__list-item btn btn--plain">Data Annotation</li>
+          <li class="skills__list-item btn btn--plain">Git</li>
+          <li class="skills__list-item btn btn--plain">Power BI (learning)</li>
+          <li class="skills__list-item btn btn--plain">Agent-Based Modeling (intro)</li>
         </ul>
       </section>
 
@@ -181,16 +111,11 @@
         <a href="mailto:babursayer@gmail.com" aria-label="Email me">
           <button class="btn btn--outline">Email me</button>
         </a>
-      </section>      
+      </section>
     </main>
 
     <footer class="footer">
-      <a
-        href="https://github.com/BaburshahSayer"
-        class="link footer__link"
-      >
-        BSS
-      </a>
+      <a href="https://github.com/BaburshahSayer" class="link footer__link">BSS</a>
     </footer>
 
     <div class="scroll-container">
