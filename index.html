@@ -1,147 +1,669 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="AI Portfolio" />
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet" />
-    <script src="https://kit.fontawesome.com/fa62c117c7.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="styles.css" />
-    <title>Babur Sayer</title>
-  </head>
-  <body class="light" id="top">
-    <header class="header center">
-      <h3>
-        <a href="https://github.com/BaburshahSayer" class="link">BSS.</a>
-      </h3>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Babur Shah Sayer — ML Engineer & AI Researcher specialising in NLP, Speech Processing and Healthcare AI" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <title>Babur Shah Sayer — ML Engineer & AI Researcher</title>
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #111118;
+      --surface2: #1a1a24;
+      --border: #2a2a3a;
+      --accent: #6ee7b7;
+      --accent2: #818cf8;
+      --text: #e8e8f0;
+      --text-muted: #7878a0;
+      --text-dim: #4a4a6a;
+      --font-display: 'Syne', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+    }
 
-      <nav class="nav center">
-        <ul class="nav__list center">
-          <li class="nav__list-item"><a class="link link--nav" href="#projects">Projects</a></li>
-          <li class="nav__list-item"><a class="link link--nav" href="#skills">Skills</a></li>
-          <li class="nav__list-item"><a class="link link--nav" href="#contact">Contact</a></li>
-        </ul>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        <button type="button" aria-label="toggle theme" class="btn btn--icon"><i aria-hidden="true" id="btn-theme" class="fas fa-moon"></i></button>
-        <button type="button" aria-label="toggle navigation" class="btn btn--icon nav__hamburger"><i aria-hidden="true" class="fas fa-bars"></i></button>
-      </nav>
-    </header>
+    html { scroll-behavior: smooth; }
 
-    <main>
-      <!-- About -->
-      <div class="about center">
-        <h1>Hi, I am <span class="about__name">Babur Shah Sayer.</span></h1>
-        <h2 class="about__role">AI & Data Researcher (MSc AI Student)</h2>
-        <p class="about__desc">
-          I'm a postgraduate AI student at the University of Essex with a focus on deep learning, data analysis, and simulation-based modeling.
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 15px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* noise overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    /* grid lines */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px;
+      opacity: 0.12;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrapper { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 0 2rem; }
+
+    /* NAV */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      background: rgba(10,10,15,0.85);
+    }
+
+    nav {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--accent);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: 5rem;
+    }
+
+    .hero-inner { width: 100%; }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 2rem;
+    }
+
+    .hero-tag::before {
+      content: '';
+      width: 24px; height: 1px;
+      background: var(--accent);
+    }
+
+    h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.8rem, 7vw, 5rem);
+      font-weight: 800;
+      line-height: 1.0;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.5rem;
+    }
+
+    h1 .name { color: var(--text); }
+    h1 .role {
+      color: transparent;
+      -webkit-text-stroke: 1px var(--accent2);
+      display: block;
+    }
+
+    .hero-desc {
+      max-width: 520px;
+      color: var(--text-muted);
+      font-size: 15px;
+      line-height: 1.8;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-stat {
+      display: inline-block;
+      background: linear-gradient(135deg, rgba(110,231,183,0.1), rgba(129,140,248,0.1));
+      border: 1px solid rgba(110,231,183,0.25);
+      border-radius: 4px;
+      padding: 3px 10px;
+      font-size: 13px;
+      color: var(--accent);
+      margin: 0.2rem 0.3rem 0.2rem 0;
+    }
+
+    .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 2rem; }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0.75rem 1.5rem;
+      background: var(--accent);
+      color: #0a0a0f;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      border-radius: 4px;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .btn-primary:hover { opacity: 0.85; transform: translateY(-1px); }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0.75rem 1.5rem;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      text-decoration: none;
+      border-radius: 4px;
+      transition: border-color 0.2s, color 0.2s, transform 0.2s;
+    }
+    .btn-outline:hover { border-color: var(--accent2); color: var(--accent2); transform: translateY(-1px); }
+
+    /* SECTIONS */
+    section { padding: 6rem 0; }
+
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 3rem;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .section-label span { color: var(--accent); }
+
+    h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+      color: var(--text);
+    }
+
+    /* PROJECTS */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .project-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.75rem;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: border-color 0.2s, transform 0.2s, background 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .project-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(110,231,183,0.04), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .project-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-3px);
+      background: var(--surface2);
+    }
+
+    .project-card:hover::before { opacity: 1; }
+
+    .project-card.featured {
+      border-color: rgba(110,231,183,0.3);
+      grid-column: 1 / -1;
+    }
+
+    .project-card.featured .project-title { font-size: 1.2rem; }
+
+    .project-featured-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    .project-featured-badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .project-title {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.6rem;
+    }
+
+    .project-desc {
+      color: var(--text-muted);
+      font-size: 13px;
+      line-height: 1.7;
+      margin-bottom: 1.2rem;
+    }
+
+    .project-result {
+      display: inline-block;
+      background: rgba(110,231,183,0.1);
+      border: 1px solid rgba(110,231,183,0.2);
+      border-radius: 3px;
+      padding: 2px 8px;
+      font-size: 12px;
+      color: var(--accent);
+      margin-bottom: 1.2rem;
+    }
+
+    .project-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+
+    .tag {
+      padding: 3px 10px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      font-size: 11px;
+      color: var(--text-dim);
+      letter-spacing: 0.05em;
+    }
+
+    .project-link-icon {
+      position: absolute;
+      top: 1.5rem; right: 1.5rem;
+      color: var(--text-dim);
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+
+    .project-card:hover .project-link-icon { color: var(--accent); }
+
+    /* SKILLS */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+
+    .skill-group {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+    }
+
+    .skill-group-label {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      margin-bottom: 0.75rem;
+    }
+
+    .skill-items { display: flex; flex-wrap: wrap; gap: 6px; }
+
+    .skill-item {
+      padding: 3px 10px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* ABOUT */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+
+    @media (max-width: 600px) {
+      .about-grid { grid-template-columns: 1fr; }
+      h1 { font-size: 2.4rem; }
+      .nav-links { display: none; }
+    }
+
+    .about-text p {
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      line-height: 1.8;
+    }
+
+    .about-text p strong { color: var(--text); }
+
+    .about-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+    .stat-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-dim);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* CONTACT */
+    .contact-inner {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 3rem;
+      text-align: center;
+    }
+
+    .contact-inner p { color: var(--text-muted); max-width: 420px; margin: 1rem auto 2rem; }
+
+    .contact-links { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 0;
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 12px;
+    }
+
+    /* FADE IN */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <a href="#top" class="logo">BSS.</a>
+    <ul class="nav-links">
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <div class="wrapper">
+
+    <!-- HERO -->
+    <section class="hero" id="top">
+      <div class="hero-inner">
+        <div class="hero-tag">Available for work · UK right to work </div>
+        <h1>
+          <span class="name">Babur Shah Sayer</span>
+          <span class="role">ML Engineer &<br>AI Researcher</span>
+        </h1>
+        <p class="hero-desc">
+          Specialising in NLP, speech processing, and healthcare AI. MSc Artificial Intelligence — University of Essex.
+          Built an end-to-end ML pipeline detecting Alzheimer's disease from speech with
+          <span class="hero-stat">82% accuracy</span>
+          <span class="hero-stat">78% dissertation grade</span>
+          <span class="hero-stat">Above MSc level — supervisor</span>
         </p>
-
-        <div class="about__contact center">
-          <a href="https://github.com/BaburshahSayer" aria-label="github" class="link link--icon">
-            <i aria-hidden="true" class="fab fa-github"></i>
-          </a>
-          <a href="https://www.linkedin.com/in/babur-shah-sayer-79b0161b1/" aria-label="linkedin" class="link link--icon">
-            <i aria-hidden="true" class="fab fa-linkedin"></i>
-          </a>
+        <div class="hero-actions">
+          <a href="mailto:babursayer@gmail.com" class="btn-primary">Get in touch</a>
+          <a href="https://github.com/BaburshahSayer" target="_blank" rel="noopener" class="btn-outline">GitHub ↗</a>
+          <a href="https://www.linkedin.com/in/babur-sayer-79b0161b1/" target="_blank" rel="noopener" class="btn-outline">LinkedIn ↗</a>
         </div>
       </div>
+    </section>
 
-      <!-- Projects -->
-      <section id="projects" class="section projects">
-        <h2 class="section__title">Projects</h2>
-        <div class="projects__grid">
-           
-          <div class="project">
-            <h3>Alzheimers Speech Detection</h3>
-            <p class="project__description">
-              This project uses machine learning to detect Alzheimer's Disease (AD) early through spontaneous speech analysis, offering a cost-effective, non-invasive alternative to traditional diagnostics.            </p>
-            <ul class="project__stack">
-              <li class="project__stack-item">Python</li>
-              <li class="project__stack-item">EDA</li>
-              <li class="project__stack-item">MFCCS</li>
-              <li class="project__stack-item">Machine Learning</li>
-            </ul>
-            <a href="https://github.com/BaburshahSayer/alzheimers-speech-detection" aria-label="source code" class="link link--icon">
-              <i aria-hidden="true" class="fab fa-github"></i>
-            </a>
+    <!-- PROJECTS -->
+    <section id="projects" class="fade-in">
+      <div class="section-label"><span>01</span> Projects</div>
+      <h2>Selected Work</h2>
+      <br>
+      <div class="projects-grid">
+
+        <a href="https://github.com/BaburshahSayer/alzheimers-speech-detection" target="_blank" rel="noopener" class="project-card featured">
+          <span class="project-link-icon">↗</span>
+          <div class="project-featured-badge">Featured · MSc Dissertation</div>
+          <div class="project-title">Alzheimer's Disease Detection from Speech</div>
+          <p class="project-desc">
+            Designed and implemented a complete, reproducible ML research pipeline to detect Alzheimer's disease from spontaneous speech. Used the DementiaBank Pitt Corpus, extracting acoustic (MFCC) and linguistic features. Trained and compared multiple classical ML and deep learning models. Evaluated with precision, recall, and F1-score.
+          </p>
+          <div class="project-result">82% classification accuracy · Dissertation grade: 78%</div>
+          <div class="project-tags">
+            <span class="tag">Python</span>
+            <span class="tag">scikit-learn</span>
+            <span class="tag">PyTorch</span>
+            <span class="tag">MFCC</span>
+            <span class="tag">NLP</span>
+            <span class="tag">Healthcare AI</span>
+            <span class="tag">DementiaBank</span>
           </div>
-          
-          <div class="project">
-            <h3>Real-Time Object Detection</h3>
-            <p class="project__description">
-              Developed a deep learning-based real-time object detection system using PyTorch and OpenCV. Processed and annotated video datasets, integrated SQL backend, and evaluated model robustness in dynamic environments.
-            </p>
-            <ul class="project__stack">
-              <li class="project__stack-item">PyTorch</li>
-              <li class="project__stack-item">OpenCV</li>
-              <li class="project__stack-item">SQL</li>
-            </ul>
-            <a href="https://github.com/BaburshahSayer/edge-lite-object-tracker" aria-label="source code" class="link link--icon">
-              <i aria-hidden="true" class="fab fa-github"></i>
-            </a>
-          </div>
-
-          <div class="project">
-            <h3>Face Recognition
-            </h3>
-            <p class="project__description">
-              Built a real-time face detection using OpenCV. The application captures video from your computer's webcam and identifies human faces in real-time, highlighting them with blue rectangles
-            </p>
-            <ul class="project__stack">
-              <li class="project__stack-item">Python</li>
-              <li class="project__stack-item">OpenCV</li>
-              <li class="project__stack-item">Yolo</li>
-            </ul>
-            <a href="https://github.com/BaburshahSayer/face_recognition" aria-label="source code" class="link link--icon">
-              <i aria-hidden="true" class="fab fa-github"></i>
-            </a>
-          </div>
-
-        </div>
-      </section>
-
-      <!-- Skills -->
-      <section class="section skills" id="skills">
-        <h2 class="section__title">Skills</h2>
-        <ul class="skills__list">
-          <li class="skills__list-item btn btn--plain">Python</li>
-          <li class="skills__list-item btn btn--plain">PyTorch</li>
-          <li class="skills__list-item btn btn--plain">OpenCV</li>
-          <li class="skills__list-item btn btn--plain">SQL</li>
-          <li class="skills__list-item btn btn--plain">Pandas</li>
-          <li class="skills__list-item btn btn--plain">NumPy</li>
-          <li class="skills__list-item btn btn--plain">EDA</li>
-          <li class="skills__list-item btn btn--plain">Data Annotation</li>
-          <li class="skills__list-item btn btn--plain">Git</li>
-          <li class="skills__list-item btn btn--plain">Power BI (learning)</li>
-          <li class="skills__list-item btn btn--plain">Agent-Based Modeling (intro)</li>
-        </ul>
-      </section>
-
-      <!-- Contact -->
-      <section class="section contact center" id="contact">
-        <h2 class="section__title">Contact</h2>
-        <a href="mailto:babursayer@gmail.com" aria-label="Email me">
-          <button class="btn btn--outline">Email me</button>
         </a>
-      </section>
-    </main>
 
-    <footer class="footer">
-      <a href="https://github.com/BaburshahSayer" class="link footer__link">BSS</a>
-    </footer>
-
-    <div class="scroll-container">
-      <div class="scroll-top">
-        <a aria-label="Scroll up" href="#top">
-          <i aria-hidden="true" class="fas fa-arrow-up"></i>
+        <a href="https://github.com/BaburshahSayer/edge-lite-object-tracker" target="_blank" rel="noopener" class="project-card">
+          <span class="project-link-icon">↗</span>
+          <div class="project-title">Real-Time Object Detection & Tracking</div>
+          <p class="project-desc">
+            Lightweight real-time object detection and tracking system optimised for edge computing. Uses YOLOv5 and SORT algorithm for multi-object tracking with minimal latency.
+          </p>
+          <div class="project-tags">
+            <span class="tag">PyTorch</span>
+            <span class="tag">OpenCV</span>
+            <span class="tag">YOLOv5</span>
+            <span class="tag">Computer Vision</span>
+          </div>
         </a>
+
+        <a href="https://github.com/BaburshahSayer/face_recognition" target="_blank" rel="noopener" class="project-card">
+          <span class="project-link-icon">↗</span>
+          <div class="project-title">Sentiment Analysis with NLP</div>
+          <p class="project-desc">
+            Implemented and compared Logistic Regression and BERT-based models for sentiment classification. Evaluated using precision, recall, and F1-score across multiple datasets.
+          </p>
+          <div class="project-tags">
+            <span class="tag">Python</span>
+            <span class="tag">BERT</span>
+            <span class="tag">NLP</span>
+            <span class="tag">scikit-learn</span>
+          </div>
+        </a>
+
       </div>
-    </div>
+    </section>
 
-    <script src="./script.js"></script>
-  </body>
+    <!-- SKILLS -->
+    <section id="skills" class="fade-in">
+      <div class="section-label"><span>02</span> Skills</div>
+      <h2>Technical Stack</h2>
+      <br>
+      <div class="skills-grid">
+        <div class="skill-group">
+          <div class="skill-group-label">Languages</div>
+          <div class="skill-items">
+            <span class="skill-item">Python</span>
+            <span class="skill-item">SQL</span>
+            <span class="skill-item">JavaScript</span>
+            <span class="skill-item">PHP</span>
+          </div>
+        </div>
+        <div class="skill-group">
+          <div class="skill-group-label">ML & AI</div>
+          <div class="skill-items">
+            <span class="skill-item">scikit-learn</span>
+            <span class="skill-item">PyTorch</span>
+            <span class="skill-item">TensorFlow</span>
+            <span class="skill-item">BERT</span>
+            <span class="skill-item">NLP</span>
+            <span class="skill-item">Computer Vision</span>
+          </div>
+        </div>
+        <div class="skill-group">
+          <div class="skill-group-label">Data</div>
+          <div class="skill-items">
+            <span class="skill-item">pandas</span>
+            <span class="skill-item">NumPy</span>
+            <span class="skill-item">EDA</span>
+            <span class="skill-item">Feature Engineering</span>
+            <span class="skill-item">Power BI</span>
+            <span class="skill-item">matplotlib</span>
+          </div>
+        </div>
+        <div class="skill-group">
+          <div class="skill-group-label">Engineering</div>
+          <div class="skill-items">
+            <span class="skill-item">Git</span>
+            <span class="skill-item">REST APIs</span>
+            <span class="skill-item">Jupyter</span>
+            <span class="skill-item">Vue.js</span>
+            <span class="skill-item">Laravel</span>
+            <span class="skill-item">MySQL</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" class="fade-in">
+      <div class="section-label"><span>03</span> About</div>
+      <h2>Background</h2>
+      <br>
+      <div class="about-grid">
+        <div class="about-text">
+          <p>I'm an AI engineer and researcher with an <strong>MSc in Artificial Intelligence from the University of Essex</strong>, specialising in machine learning, NLP, and speech analysis.</p>
+          <p>My dissertation on Alzheimer's detection from spontaneous speech was described by my supervisor as demonstrating <strong>methodological maturity above what is typically expected at MSc level</strong>.</p>
+          <p>Before my Masters I spent nearly three years as a Business and Data Analyst, delivering KPI reports and data pipelines in a production environment — so I understand how to turn data into decisions that matter.</p>
+          <p>I have <strong>full right to work in the UK</strong> with a 5-year visa and I'm actively looking for junior or graduate ML, NLP, or data science roles — remote, hybrid, or in-person near Manchester or Preston.</p>
+        </div>
+        <div class="about-stats">
+          <div class="stat-box">
+            <div class="stat-number">82%</div>
+            <div class="stat-label">Model accuracy</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-number">78%</div>
+            <div class="stat-label">Dissertation grade</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-number">3yr</div>
+            <div class="stat-label">Industry experience</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-number">4</div>
+            <div class="stat-label">Languages spoken</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="fade-in">
+      <div class="section-label"><span>04</span> Contact</div>
+      <div class="contact-inner">
+        <h2>Let's work together</h2>
+        <p>I'm open to junior ML, NLP, data science, and AI research roles. Remote, hybrid, or in-person near Manchester/Preston.</p>
+        <div class="contact-links">
+          <a href="mailto:babursayer@gmail.com" class="btn-primary">babursayer@gmail.com</a>
+          <a href="https://www.linkedin.com/in/babur-sayer-79b0161b1/" target="_blank" rel="noopener" class="btn-outline">LinkedIn ↗</a>
+          <a href="https://github.com/BaburshahSayer" target="_blank" rel="noopener" class="btn-outline">GitHub ↗</a>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <div class="wrapper">Babur Shah Sayer · ML Engineer & AI Researcher</div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+
+</body>
 </html>
