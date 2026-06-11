@@ -1,669 +1,960 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Babur Shah Sayer — ML Engineer & AI Researcher specialising in NLP, Speech Processing and Healthcare AI" />
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
-  <title>Babur Shah Sayer — ML Engineer & AI Researcher</title>
-  <style>
-    :root {
-      --bg: #0a0a0f;
-      --surface: #111118;
-      --surface2: #1a1a24;
-      --border: #2a2a3a;
-      --accent: #6ee7b7;
-      --accent2: #818cf8;
-      --text: #e8e8f0;
-      --text-muted: #7878a0;
-      --text-dim: #4a4a6a;
-      --font-display: 'Syne', sans-serif;
-      --font-mono: 'DM Mono', monospace;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<meta name="description" content="SIGNAL RUNNER — the playable portfolio of Babur Shah Sayer, ML Engineer & AI Researcher." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+<title>SIGNAL RUNNER — the playable portfolio of Babur Shah Sayer</title>
+<style>
+:root{
+  --black:#04060a;
+  --panel:rgba(7,11,17,.86);
+  --line:rgba(255,255,255,.14);
+  --white:#f2f5f8;
+  --muted:#8c98a6;
+  --dim:#566270;
+  --signal:#37e0ff;
+  --heat:#ff7a3d;
+  --neural:#9a6bff;
+  --gold:#ffc94d;
+  --red:#ff3b30;
+  --green:#5dff9d;
+  --title:'Anton',sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:var(--black);color:var(--white);
+  font-family:var(--mono);font-size:14px;line-height:1.65;
+  overflow:hidden;
+  -webkit-user-select:none;user-select:none;
+  touch-action:none;
+}
+body.folio-mode{overflow:auto;touch-action:auto;-webkit-user-select:text;user-select:text}
+::selection{background:var(--gold);color:#000}
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+canvas#game{position:fixed;inset:0;display:block;z-index:1}
 
-    html { scroll-behavior: smooth; }
+/* scanlines + vignette for arcade feel */
+.crt{position:fixed;inset:0;z-index:3;pointer-events:none;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.13) 0 1px,transparent 1px 3px);
+  mix-blend-mode:multiply;opacity:.5}
+.vig{position:fixed;inset:0;z-index:3;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 50%,transparent 55%,rgba(0,0,0,.7) 100%)}
 
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--font-mono);
-      font-size: 15px;
-      line-height: 1.7;
-      overflow-x: hidden;
-    }
+/* ============ HUD ============ */
+#hud{position:fixed;inset:0;z-index:10;pointer-events:none;display:none;font-size:11px;letter-spacing:.16em;text-transform:uppercase}
+#hud.on{display:block}
+.hud-top{position:absolute;top:14px;left:18px;right:18px;display:flex;justify-content:space-between;align-items:center;gap:1rem}
+.hud-score{color:var(--gold)}
+.hud-score b{font-family:var(--title);font-size:20px;letter-spacing:.04em;font-weight:400}
+.hud-stage{color:var(--muted);text-align:center;flex:1}
+.hud-stage .act{color:var(--white)}
+.hud-hp{display:flex;gap:5px}
+.hp{width:18px;height:10px;background:var(--green);box-shadow:0 0 8px var(--green)}
+.hp.off{background:rgba(255,255,255,.12);box-shadow:none}
+.hud-progress{position:absolute;top:46px;left:18px;right:18px;height:3px;background:rgba(255,255,255,.08)}
+.hud-progress i{display:block;height:100%;width:0;background:var(--signal)}
+.hud-bottom{position:absolute;bottom:12px;left:18px;right:18px;display:flex;justify-content:space-between;color:var(--dim);font-size:10px}
+#toast{
+  position:fixed;left:50%;top:22%;transform:translateX(-50%) translateY(8px);
+  z-index:11;pointer-events:none;opacity:0;transition:opacity .18s,transform .18s;
+  font-family:var(--title);font-size:clamp(1.1rem,3vw,1.7rem);letter-spacing:.06em;text-transform:uppercase;
+  color:var(--gold);text-shadow:0 0 18px rgba(255,201,77,.5);text-align:center;
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast small{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.3em;color:var(--muted)}
 
-    /* noise overlay */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.4;
-    }
+/* ============ OVERLAYS ============ */
+.overlay{
+  position:fixed;inset:0;z-index:20;display:none;align-items:center;justify-content:center;
+  background:rgba(2,4,8,.78);backdrop-filter:blur(8px);padding:1.2rem;
+}
+.overlay.on{display:flex}
+.box{
+  width:min(720px,100%);max-height:88vh;overflow:auto;
+  background:var(--panel);border:1px solid var(--line);
+  padding:clamp(1.4rem,4vw,2.6rem);
+  box-shadow:0 0 60px rgba(55,224,255,.08);
+}
+.box.center{text-align:center}
+.tag{
+  display:inline-block;font-size:10px;letter-spacing:.3em;text-transform:uppercase;
+  color:#000;background:var(--white);padding:2px 10px;margin-bottom:1.1rem;
+}
+.tag.gold{background:var(--gold)}
+.tag.heat{background:var(--heat)}
+.tag.neural{background:var(--neural);color:#fff}
+h1,h2,h3{font-family:var(--title);font-weight:400;text-transform:uppercase;letter-spacing:.02em;line-height:.95}
+h1{font-size:clamp(2.6rem,9vw,5.4rem)}
+h2{font-size:clamp(1.7rem,5vw,2.8rem);margin-bottom:.9rem}
+h3{font-size:clamp(1.1rem,3vw,1.5rem);margin-bottom:.4rem}
+.t-signal{color:var(--signal)}.t-heat{color:var(--heat)}.t-neural{color:var(--neural)}.t-gold{color:var(--gold)}
+p.lede{color:var(--muted);max-width:58ch;margin:0 auto 1rem}
+p.lede b{color:var(--white);font-weight:500}
+.press{font-size:10px;letter-spacing:.34em;text-transform:uppercase;color:var(--dim);margin-top:1.4rem;animation:pulse 1.6s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+.btn{
+  display:inline-flex;align-items:center;gap:9px;
+  font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;
+  padding:.85rem 1.6rem;cursor:pointer;text-decoration:none;
+  transition:transform .12s,background .12s,color .12s,border-color .12s;
+}
+.btn:focus-visible{outline:2px solid var(--signal);outline-offset:2px}
+.btn-solid{background:var(--white);color:#000;border:1px solid var(--white)}
+.btn-solid:hover{background:var(--gold);border-color:var(--gold);transform:translateY(-2px)}
+.btn-wire{background:transparent;color:var(--white);border:1px solid var(--line)}
+.btn-wire:hover{border-color:var(--white);transform:translateY(-2px)}
+.btn-row{display:flex;gap:.8rem;flex-wrap:wrap;justify-content:center;margin-top:1.4rem}
+.kbd{display:inline-block;border:1px solid var(--line);padding:0 7px;font-size:11px;color:var(--muted);border-radius:3px;margin:0 2px}
+.menu-meta{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);margin-top:1.6rem;line-height:2.2}
+.blink-coin{font-size:11px;letter-spacing:.4em;color:var(--gold);text-transform:uppercase;animation:pulse 1.2s infinite;margin-bottom:.8rem}
+#muteState{color:var(--green)}
+.hi{color:var(--gold)}
 
-    /* grid lines */
-    body::after {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
-      background-size: 60px 60px;
-      opacity: 0.12;
-      pointer-events: none;
-      z-index: 0;
-    }
+/* skills grid in cards */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);text-align:left;margin-top:1.2rem}
+.cell{background:rgba(4,6,10,.85);padding:1rem 1.1rem}
+.cell .cn{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--heat);margin-bottom:.6rem}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{padding:2px 9px;border:1px solid var(--line);font-size:11px;color:var(--muted)}
+.chip.got{color:var(--gold);border-color:var(--gold);text-shadow:0 0 8px rgba(255,201,77,.4)}
 
-    .wrapper { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 0 2rem; }
+/* project card */
+.proj-meta{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);margin-bottom:.7rem}
+.proj-meta i{font-style:normal;color:var(--neural)}
+.stats{display:flex;gap:1.6rem;justify-content:center;flex-wrap:wrap;margin:1.3rem 0}
+.stat .n{font-family:var(--title);font-size:2.2rem;color:var(--gold)}
+.stat .l{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim)}
 
-    /* NAV */
-    header {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      background: rgba(10,10,15,0.85);
-    }
+/* win verdict number */
+.verdict-n{font-family:var(--title);font-size:clamp(4rem,16vw,9rem);color:var(--gold);line-height:1;text-shadow:0 0 40px rgba(255,201,77,.45)}
+.run-stats{display:flex;gap:1.8rem;justify-content:center;flex-wrap:wrap;margin:1rem 0 .4rem;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.run-stats b{color:var(--white);font-weight:500}
 
-    nav {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 1rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+/* ============ FOLIO (skip) MODE ============ */
+#folio{display:none;position:relative;z-index:30;background:var(--black)}
+body.folio-mode #folio{display:block}
+body.folio-mode canvas#game,body.folio-mode .crt,body.folio-mode .vig{display:none}
+#folio .wrap{max-width:880px;margin:0 auto;padding:5rem 1.4rem}
+#folio section{margin-bottom:4.5rem}
+#folio .back-to-game{position:fixed;top:14px;right:14px;z-index:40}
+.f-head{display:flex;align-items:center;gap:12px;font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--dim);margin-bottom:1.4rem}
+.f-head::after{content:'';flex:1;height:1px;background:var(--line)}
+.films{display:grid;gap:1rem;margin-top:1rem}
+.film{position:relative;display:block;text-decoration:none;color:inherit;border:1px solid var(--line);padding:1.3rem 1.4rem;transition:border-color .15s,transform .15s}
+.film:hover{border-color:var(--neural);transform:translateX(5px)}
+.film p{color:var(--muted);font-size:13px;max-width:64ch;margin:.4rem 0 .8rem}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tg{padding:2px 9px;border:1px solid var(--line);font-size:10.5px;color:var(--dim)}
 
-    .logo {
-      font-family: var(--font-display);
-      font-weight: 800;
-      font-size: 1.1rem;
-      color: var(--accent);
-      text-decoration: none;
-      letter-spacing: -0.02em;
-    }
-
-    .nav-links { display: flex; gap: 2rem; list-style: none; }
-    .nav-links a {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-size: 13px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      transition: color 0.2s;
-    }
-    .nav-links a:hover { color: var(--accent); }
-
-    /* HERO */
-    .hero {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      padding-top: 5rem;
-    }
-
-    .hero-inner { width: 100%; }
-
-    .hero-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 12px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 2rem;
-    }
-
-    .hero-tag::before {
-      content: '';
-      width: 24px; height: 1px;
-      background: var(--accent);
-    }
-
-    h1 {
-      font-family: var(--font-display);
-      font-size: clamp(2.8rem, 7vw, 5rem);
-      font-weight: 800;
-      line-height: 1.0;
-      letter-spacing: -0.03em;
-      margin-bottom: 1.5rem;
-    }
-
-    h1 .name { color: var(--text); }
-    h1 .role {
-      color: transparent;
-      -webkit-text-stroke: 1px var(--accent2);
-      display: block;
-    }
-
-    .hero-desc {
-      max-width: 520px;
-      color: var(--text-muted);
-      font-size: 15px;
-      line-height: 1.8;
-      margin-bottom: 2.5rem;
-    }
-
-    .hero-stat {
-      display: inline-block;
-      background: linear-gradient(135deg, rgba(110,231,183,0.1), rgba(129,140,248,0.1));
-      border: 1px solid rgba(110,231,183,0.25);
-      border-radius: 4px;
-      padding: 3px 10px;
-      font-size: 13px;
-      color: var(--accent);
-      margin: 0.2rem 0.3rem 0.2rem 0;
-    }
-
-    .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 2rem; }
-
-    .btn-primary {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 0.75rem 1.5rem;
-      background: var(--accent);
-      color: #0a0a0f;
-      font-family: var(--font-mono);
-      font-size: 13px;
-      font-weight: 500;
-      text-decoration: none;
-      border-radius: 4px;
-      transition: opacity 0.2s, transform 0.2s;
-    }
-    .btn-primary:hover { opacity: 0.85; transform: translateY(-1px); }
-
-    .btn-outline {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 0.75rem 1.5rem;
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      font-family: var(--font-mono);
-      font-size: 13px;
-      text-decoration: none;
-      border-radius: 4px;
-      transition: border-color 0.2s, color 0.2s, transform 0.2s;
-    }
-    .btn-outline:hover { border-color: var(--accent2); color: var(--accent2); transform: translateY(-1px); }
-
-    /* SECTIONS */
-    section { padding: 6rem 0; }
-
-    .section-label {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 11px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--text-dim);
-      margin-bottom: 3rem;
-    }
-
-    .section-label::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--border);
-    }
-
-    .section-label span { color: var(--accent); }
-
-    h2 {
-      font-family: var(--font-display);
-      font-size: clamp(1.8rem, 4vw, 2.6rem);
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      margin-bottom: 1rem;
-      color: var(--text);
-    }
-
-    /* PROJECTS */
-    .projects-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .project-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1.75rem;
-      text-decoration: none;
-      color: inherit;
-      display: block;
-      transition: border-color 0.2s, transform 0.2s, background 0.2s;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .project-card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(110,231,183,0.04), transparent);
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-
-    .project-card:hover {
-      border-color: var(--accent);
-      transform: translateY(-3px);
-      background: var(--surface2);
-    }
-
-    .project-card:hover::before { opacity: 1; }
-
-    .project-card.featured {
-      border-color: rgba(110,231,183,0.3);
-      grid-column: 1 / -1;
-    }
-
-    .project-card.featured .project-title { font-size: 1.2rem; }
-
-    .project-featured-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 11px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 1rem;
-    }
-
-    .project-featured-badge::before {
-      content: '';
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--accent);
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
-    }
-
-    .project-title {
-      font-family: var(--font-display);
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--text);
-      margin-bottom: 0.6rem;
-    }
-
-    .project-desc {
-      color: var(--text-muted);
-      font-size: 13px;
-      line-height: 1.7;
-      margin-bottom: 1.2rem;
-    }
-
-    .project-result {
-      display: inline-block;
-      background: rgba(110,231,183,0.1);
-      border: 1px solid rgba(110,231,183,0.2);
-      border-radius: 3px;
-      padding: 2px 8px;
-      font-size: 12px;
-      color: var(--accent);
-      margin-bottom: 1.2rem;
-    }
-
-    .project-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-
-    .tag {
-      padding: 3px 10px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 3px;
-      font-size: 11px;
-      color: var(--text-dim);
-      letter-spacing: 0.05em;
-    }
-
-    .project-link-icon {
-      position: absolute;
-      top: 1.5rem; right: 1.5rem;
-      color: var(--text-dim);
-      font-size: 14px;
-      transition: color 0.2s;
-    }
-
-    .project-card:hover .project-link-icon { color: var(--accent); }
-
-    /* SKILLS */
-    .skills-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1rem;
-    }
-
-    .skill-group {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1.25rem 1.5rem;
-    }
-
-    .skill-group-label {
-      font-size: 11px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--accent2);
-      margin-bottom: 0.75rem;
-    }
-
-    .skill-items { display: flex; flex-wrap: wrap; gap: 6px; }
-
-    .skill-item {
-      padding: 3px 10px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 3px;
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    /* ABOUT */
-    .about-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 3rem;
-      align-items: start;
-    }
-
-    @media (max-width: 600px) {
-      .about-grid { grid-template-columns: 1fr; }
-      h1 { font-size: 2.4rem; }
-      .nav-links { display: none; }
-    }
-
-    .about-text p {
-      color: var(--text-muted);
-      margin-bottom: 1rem;
-      line-height: 1.8;
-    }
-
-    .about-text p strong { color: var(--text); }
-
-    .about-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-
-    .stat-box {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1.25rem;
-      text-align: center;
-    }
-
-    .stat-number {
-      font-family: var(--font-display);
-      font-size: 2rem;
-      font-weight: 800;
-      color: var(--accent);
-      line-height: 1;
-      margin-bottom: 0.3rem;
-    }
-
-    .stat-label {
-      font-size: 11px;
-      color: var(--text-dim);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    /* CONTACT */
-    .contact-inner {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 3rem;
-      text-align: center;
-    }
-
-    .contact-inner p { color: var(--text-muted); max-width: 420px; margin: 1rem auto 2rem; }
-
-    .contact-links { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
-
-    /* FOOTER */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 2rem 0;
-      text-align: center;
-      color: var(--text-dim);
-      font-size: 12px;
-    }
-
-    /* FADE IN */
-    .fade-in {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.6s ease, transform 0.6s ease;
-    }
-    .fade-in.visible { opacity: 1; transform: translateY(0); }
-  </style>
+@media (max-width:700px){
+  .hud-bottom .hide-m{display:none}
+  .hud-stage{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  .press,.blink-coin{animation:none}
+}
+</style>
 </head>
 <body>
 
-<header>
-  <nav>
-    <a href="#top" class="logo">BSS.</a>
-    <ul class="nav-links">
-      <li><a href="#projects">Projects</a></li>
-      <li><a href="#skills">Skills</a></li>
-      <li><a href="#about">About</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-  </nav>
-</header>
+<canvas id="game"></canvas>
+<div class="crt" aria-hidden="true"></div>
+<div class="vig" aria-hidden="true"></div>
 
-<main>
-  <div class="wrapper">
-
-    <!-- HERO -->
-    <section class="hero" id="top">
-      <div class="hero-inner">
-        <div class="hero-tag">Available for work</div>
-        <h1>
-          <span class="name">Babur Shah Sayer</span>
-          <span class="role">ML Engineer &<br>AI Researcher</span>
-        </h1>
-        <p class="hero-desc">
-          Specialising in NLP, speech processing, and healthcare AI. MSc Artificial Intelligence — University of Essex.
-          Built an end-to-end ML pipeline detecting Alzheimer's disease from speech with
-          <span class="hero-stat">82% accuracy</span>
-          <span class="hero-stat">78% dissertation grade</span>
-          <span class="hero-stat">Above MSc level — supervisor</span>
-        </p>
-        <div class="hero-actions">
-          <a href="mailto:babursayer@gmail.com" class="btn-primary">Get in touch</a>
-          <a href="https://github.com/BaburshahSayer" target="_blank" rel="noopener" class="btn-outline">GitHub ↗</a>
-          <a href="https://www.linkedin.com/in/babur-sayer-79b0161b1/" target="_blank" rel="noopener" class="btn-outline">LinkedIn ↗</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- PROJECTS -->
-    <section id="projects" class="fade-in">
-      <div class="section-label"><span>01</span> Projects</div>
-      <h2>Selected Work</h2>
-      <br>
-      <div class="projects-grid">
-
-        <a href="https://github.com/BaburshahSayer/alzheimers-speech-detection" target="_blank" rel="noopener" class="project-card featured">
-          <span class="project-link-icon">↗</span>
-          <div class="project-featured-badge">Featured · MSc Dissertation</div>
-          <div class="project-title">Alzheimer's Disease Detection from Speech</div>
-          <p class="project-desc">
-            Designed and implemented a complete, reproducible ML research pipeline to detect Alzheimer's disease from spontaneous speech. Used the DementiaBank Pitt Corpus, extracting acoustic (MFCC) and linguistic features. Trained and compared multiple classical ML and deep learning models. Evaluated with precision, recall, and F1-score.
-          </p>
-          <div class="project-result">82% classification accuracy · Dissertation grade: 78%</div>
-          <div class="project-tags">
-            <span class="tag">Python</span>
-            <span class="tag">scikit-learn</span>
-            <span class="tag">PyTorch</span>
-            <span class="tag">MFCC</span>
-            <span class="tag">NLP</span>
-            <span class="tag">Healthcare AI</span>
-            <span class="tag">DementiaBank</span>
-          </div>
-        </a>
-
-        <a href="https://github.com/BaburshahSayer/edge-lite-object-tracker" target="_blank" rel="noopener" class="project-card">
-          <span class="project-link-icon">↗</span>
-          <div class="project-title">Real-Time Object Detection & Tracking</div>
-          <p class="project-desc">
-            Lightweight real-time object detection and tracking system optimised for edge computing. Uses YOLOv5 and SORT algorithm for multi-object tracking with minimal latency.
-          </p>
-          <div class="project-tags">
-            <span class="tag">PyTorch</span>
-            <span class="tag">OpenCV</span>
-            <span class="tag">YOLOv5</span>
-            <span class="tag">Computer Vision</span>
-          </div>
-        </a>
-
-        <a href="https://github.com/BaburshahSayer/face_recognition" target="_blank" rel="noopener" class="project-card">
-          <span class="project-link-icon">↗</span>
-          <div class="project-title">Sentiment Analysis with NLP</div>
-          <p class="project-desc">
-            Implemented and compared Logistic Regression and BERT-based models for sentiment classification. Evaluated using precision, recall, and F1-score across multiple datasets.
-          </p>
-          <div class="project-tags">
-            <span class="tag">Python</span>
-            <span class="tag">BERT</span>
-            <span class="tag">NLP</span>
-            <span class="tag">scikit-learn</span>
-          </div>
-        </a>
-
-      </div>
-    </section>
-
-    <!-- SKILLS -->
-    <section id="skills" class="fade-in">
-      <div class="section-label"><span>02</span> Skills</div>
-      <h2>Technical Stack</h2>
-      <br>
-      <div class="skills-grid">
-        <div class="skill-group">
-          <div class="skill-group-label">Languages</div>
-          <div class="skill-items">
-            <span class="skill-item">Python</span>
-            <span class="skill-item">SQL</span>
-            <span class="skill-item">JavaScript</span>
-            <span class="skill-item">PHP</span>
-          </div>
-        </div>
-        <div class="skill-group">
-          <div class="skill-group-label">ML & AI</div>
-          <div class="skill-items">
-            <span class="skill-item">scikit-learn</span>
-            <span class="skill-item">PyTorch</span>
-            <span class="skill-item">TensorFlow</span>
-            <span class="skill-item">BERT</span>
-            <span class="skill-item">NLP</span>
-            <span class="skill-item">Computer Vision</span>
-          </div>
-        </div>
-        <div class="skill-group">
-          <div class="skill-group-label">Data</div>
-          <div class="skill-items">
-            <span class="skill-item">pandas</span>
-            <span class="skill-item">NumPy</span>
-            <span class="skill-item">EDA</span>
-            <span class="skill-item">Feature Engineering</span>
-            <span class="skill-item">Power BI</span>
-            <span class="skill-item">matplotlib</span>
-          </div>
-        </div>
-        <div class="skill-group">
-          <div class="skill-group-label">Engineering</div>
-          <div class="skill-items">
-            <span class="skill-item">Git</span>
-            <span class="skill-item">REST APIs</span>
-            <span class="skill-item">Jupyter</span>
-            <span class="skill-item">Vue.js</span>
-            <span class="skill-item">Laravel</span>
-            <span class="skill-item">MySQL</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ABOUT -->
-    <section id="about" class="fade-in">
-      <div class="section-label"><span>03</span> About</div>
-      <h2>Background</h2>
-      <br>
-      <div class="about-grid">
-        <div class="about-text">
-          <p>I'm an AI engineer and researcher with an <strong>MSc in Artificial Intelligence from the University of Essex</strong>, specialising in machine learning, NLP, and speech analysis.</p>
-          <p>My dissertation on Alzheimer's detection from spontaneous speech was described by my supervisor as demonstrating <strong>methodological maturity above what is typically expected at MSc level</strong>.</p>
-          <p>Before my Masters I spent nearly three years as a Business and Data Analyst, delivering KPI reports and data pipelines in a production environment — so I understand how to turn data into decisions that matter.</p>
-          <p>I have <strong>full right to work in the UK</strong> I'm actively looking for junior or graduate ML, NLP, or data science roles — remote, hybrid, or in-person near Manchester or Preston.</p>
-        </div>
-        <div class="about-stats">
-          <div class="stat-box">
-            <div class="stat-number">82%</div>
-            <div class="stat-label">Model accuracy</div>
-          </div>
-          <div class="stat-box">
-            <div class="stat-number">78%</div>
-            <div class="stat-label">Dissertation grade</div>
-          </div>
-          <div class="stat-box">
-            <div class="stat-number">3yr</div>
-            <div class="stat-label">Industry experience</div>
-          </div>
-          <div class="stat-box">
-            <div class="stat-number">4</div>
-            <div class="stat-label">Languages spoken</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- CONTACT -->
-    <section id="contact" class="fade-in">
-      <div class="section-label"><span>04</span> Contact</div>
-      <div class="contact-inner">
-        <h2>Let's work together</h2>
-        <p>I'm open to junior ML, NLP, data science, and AI research roles. Remote, hybrid, or in-person near Manchester/Preston.</p>
-        <div class="contact-links">
-          <a href="mailto:babursayer@gmail.com" class="btn-primary">babursayer@gmail.com</a>
-          <a href="https://www.linkedin.com/in/babur-sayer-79b0161b1/" target="_blank" rel="noopener" class="btn-outline">LinkedIn ↗</a>
-          <a href="https://github.com/BaburshahSayer" target="_blank" rel="noopener" class="btn-outline">GitHub ↗</a>
-        </div>
-      </div>
-    </section>
-
+<!-- ============ HUD ============ -->
+<div id="hud" aria-hidden="true">
+  <div class="hud-top">
+    <div class="hud-score">SCORE <b id="score">0</b> <span id="combo" style="color:var(--signal)"></span></div>
+    <div class="hud-stage"><span class="act" id="actName">ACT I</span> · <span id="stageName">RAW SIGNAL</span></div>
+    <div class="hud-hp" id="hp"></div>
   </div>
-</main>
+  <div class="hud-progress"><i id="prog"></i></div>
+  <div class="hud-bottom">
+    <span class="hide-m">move: mouse / touch / <span class="kbd">W</span><span class="kbd">A</span><span class="kbd">S</span><span class="kbd">D</span></span>
+    <span><span class="kbd">M</span> sound · <span class="kbd">ESC</span> pause · <span class="kbd">P</span> portfolio</span>
+  </div>
+</div>
+<div id="toast"></div>
 
-<footer>
-  <div class="wrapper">Babur Shah Sayer · ML Engineer & AI Researcher</div>
-</footer>
+<!-- ============ MENU ============ -->
+<div class="overlay on" id="menu">
+  <div class="box center">
+    <div class="blink-coin">● insert curiosity to continue ●</div>
+    <h1>SIGNAL<br><span class="t-signal">RUNNER</span></h1>
+    <p class="lede" style="margin-top:1rem">The playable portfolio of <b>Babur Shah Sayer</b> — ML engineer who taught a model to hear Alzheimer's in a voice. <b>You are the signal.</b> Survive his pipeline: dodge the noise, collect the skills, recover the projects, and earn the final verdict.</p>
+    <div class="btn-row">
+      <button class="btn btn-solid" id="playBtn">▶ Press Start</button>
+      <button class="btn btn-wire" id="skipBtn">I'm a recruiter — skip to portfolio</button>
+    </div>
+    <div class="menu-meta">
+      move <span class="kbd">mouse</span> / <span class="kbd">touch</span> / <span class="kbd">WASD</span> · mute <span class="kbd">M</span> · pause <span class="kbd">ESC</span><br>
+      sound: <span id="muteState">ON</span> · best score: <span class="hi" id="hiScore">0</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============ PAUSE ============ -->
+<div class="overlay" id="pause">
+  <div class="box center">
+    <span class="tag">paused</span>
+    <h2>Signal on hold</h2>
+    <div class="btn-row">
+      <button class="btn btn-solid" id="resumeBtn">Resume</button>
+      <button class="btn btn-wire" id="pauseSkipBtn">Skip to portfolio</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ INTERSTITIAL CARD ============ -->
+<div class="overlay" id="card">
+  <div class="box" id="cardBox"></div>
+</div>
+
+<!-- ============ GAME OVER ============ -->
+<div class="overlay" id="over">
+  <div class="box center">
+    <span class="tag" style="background:var(--red);color:#fff">signal lost</span>
+    <h2>The noise won <span class="t-heat">this round</span></h2>
+    <p class="lede">Real pipelines fail too — the trick is the retry. (My Alzheimer's model didn't hit 82% on the first run either.)</p>
+    <div class="run-stats"><span>score <b id="overScore">0</b></span><span>reached <b id="overStage">ACT I</b></span></div>
+    <div class="btn-row">
+      <button class="btn btn-solid" id="retryBtn">↻ Retry act</button>
+      <button class="btn btn-wire" id="overSkipBtn">Skip to portfolio</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ WIN ============ -->
+<div class="overlay" id="win">
+  <div class="box center">
+    <span class="tag gold">final verdict</span>
+    <div class="verdict-n" id="verdictNum">0%</div>
+    <h2>Classification: <span class="t-gold">strong hire</span></h2>
+    <div class="run-stats">
+      <span>score <b id="winScore">0</b></span>
+      <span>skills collected <b id="winSkills">0</b></span>
+      <span>projects recovered <b>3/3</b></span>
+    </div>
+    <p class="lede">You just ran the same journey my dissertation runs on every voice: <b>signal → features → model → verdict</b>. The model scored 82%. You scored the demo. The sequel is an email away.</p>
+    <div class="btn-row">
+      <a class="btn btn-solid" href="mailto:babursayer@gmail.com">babursayer@gmail.com</a>
+      <a class="btn btn-wire" href="https://www.linkedin.com/in/babur-sayer-79b0161b1/" target="_blank" rel="noopener">LinkedIn ↗</a>
+      <a class="btn btn-wire" href="https://github.com/BaburshahSayer" target="_blank" rel="noopener">GitHub ↗</a>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-wire" id="againBtn">↻ Play again</button>
+      <button class="btn btn-wire" id="winFolioBtn">Read full portfolio</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ FOLIO MODE (skip) ============ -->
+<div id="folio">
+  <button class="btn btn-wire back-to-game" id="backToGame">◂ back to the game</button>
+  <div class="wrap">
+    <section>
+      <div class="f-head">dossier · 00 / signal</div>
+      <h1>Babur Shah <span class="t-signal">Sayer</span></h1>
+      <p class="lede" style="margin:1rem 0 0">ML Engineer &amp; AI Researcher — NLP, speech processing, healthcare AI. <b>MSc Artificial Intelligence, University of Essex.</b> Built an end-to-end pipeline detecting Alzheimer's disease from speech at <b>82% accuracy</b> (dissertation graded 78%, supervisor: "above MSc level"). Full right to work in the UK · Manchester / Preston / remote.</p>
+      <div class="btn-row" style="justify-content:flex-start">
+        <a class="btn btn-solid" href="mailto:babursayer@gmail.com">Get in touch</a>
+        <a class="btn btn-wire" href="https://github.com/BaburshahSayer" target="_blank" rel="noopener">GitHub ↗</a>
+        <a class="btn btn-wire" href="https://www.linkedin.com/in/babur-sayer-79b0161b1/" target="_blank" rel="noopener">LinkedIn ↗</a>
+      </div>
+    </section>
+    <section>
+      <div class="f-head">dossier · 01 / projects</div>
+      <div class="films">
+        <a class="film" href="https://github.com/BaburshahSayer/alzheimers-speech-detection" target="_blank" rel="noopener">
+          <div class="proj-meta"><i>feature presentation</i> · MSc dissertation · DementiaBank Pitt Corpus</div>
+          <h3>Alzheimer's detection from speech</h3>
+          <p>Complete, reproducible research pipeline: acoustic (MFCC) + linguistic features, classical ML vs deep learning, evaluated on precision, recall and F1. 82% accuracy · graded 78%.</p>
+          <div class="tags"><span class="tg">Python</span><span class="tg">scikit-learn</span><span class="tg">PyTorch</span><span class="tg">MFCC</span><span class="tg">Healthcare AI</span></div>
+        </a>
+        <a class="film" href="https://github.com/BaburshahSayer/edge-lite-object-tracker" target="_blank" rel="noopener">
+          <div class="proj-meta">computer vision · edge</div>
+          <h3>Real-time object detection &amp; tracking</h3>
+          <p>Lightweight multi-object detection and tracking for edge devices — YOLOv5 + SORT, tuned for minimal latency.</p>
+          <div class="tags"><span class="tg">PyTorch</span><span class="tg">OpenCV</span><span class="tg">YOLOv5</span><span class="tg">SORT</span></div>
+        </a>
+        <a class="film" href="https://github.com/BaburshahSayer/face_recognition" target="_blank" rel="noopener">
+          <div class="proj-meta">natural language processing</div>
+          <h3>Sentiment analysis: LR vs BERT</h3>
+          <p>Logistic Regression and BERT classifiers compared head-to-head across multiple datasets with precision, recall and F1.</p>
+          <div class="tags"><span class="tg">Python</span><span class="tg">BERT</span><span class="tg">NLP</span><span class="tg">scikit-learn</span></div>
+        </a>
+      </div>
+    </section>
+    <section>
+      <div class="f-head">dossier · 02 / skills</div>
+      <div class="grid">
+        <div class="cell"><div class="cn">ML &amp; AI</div><div class="chips"><span class="chip">scikit-learn</span><span class="chip">PyTorch</span><span class="chip">TensorFlow</span><span class="chip">BERT</span><span class="chip">NLP</span><span class="chip">Computer Vision</span></div></div>
+        <div class="cell"><div class="cn">Languages</div><div class="chips"><span class="chip">Python</span><span class="chip">SQL</span><span class="chip">JavaScript</span><span class="chip">PHP</span></div></div>
+        <div class="cell"><div class="cn">Data</div><div class="chips"><span class="chip">pandas</span><span class="chip">NumPy</span><span class="chip">EDA</span><span class="chip">Feature Engineering</span><span class="chip">Power BI</span><span class="chip">matplotlib</span></div></div>
+        <div class="cell"><div class="cn">Engineering</div><div class="chips"><span class="chip">Git</span><span class="chip">REST APIs</span><span class="chip">Jupyter</span><span class="chip">Vue.js</span><span class="chip">Laravel</span><span class="chip">MySQL</span></div></div>
+      </div>
+    </section>
+    <section>
+      <div class="f-head">dossier · 03 / background</div>
+      <p class="lede" style="margin:0 0 1rem">My dissertation on Alzheimer's detection from spontaneous speech was described by my supervisor as showing <b>methodological maturity above what is typically expected at MSc level</b>. Before the Masters I spent nearly three years as a <b>Business and Data Analyst</b>, delivering KPI reports and data pipelines in production — I turn data into decisions, not just notebooks.</p>
+      <p class="lede" style="margin:0">I have <b>full right to work in the UK</b> and I'm actively looking for junior or graduate ML, NLP or data-science roles — remote, hybrid, or in person near Manchester or Preston.</p>
+    </section>
+  </div>
+</div>
 
 <script>
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-  }, { threshold: 0.1 });
-  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-</script>
+(function(){
+"use strict";
+/* ================================================================
+   SIGNAL RUNNER — a playable portfolio
+   You are the signal. Survive the pipeline. Earn the verdict.
+================================================================ */
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const cvs = document.getElementById('game');
+const ctx = cvs.getContext('2d');
+let W=0,H=0,DPR=1;
+function resize(){
+  DPR=Math.min(devicePixelRatio||1,2);
+  W=innerWidth;H=innerHeight;
+  cvs.width=W*DPR;cvs.height=H*DPR;
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+}
+resize();addEventListener('resize',resize);
 
+/* ---------------- audio (synth, no assets) ---------------- */
+let AC=null, muted=false, padNodes=null;
+function audio(){ if(!AC){ try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){} } return AC; }
+function beep(f=440,d=0.08,type='square',g=0.05,slide=0){
+  const ac=audio(); if(!ac||muted)return;
+  const o=ac.createOscillator(),v=ac.createGain();
+  o.type=type;o.frequency.setValueAtTime(f,ac.currentTime);
+  if(slide)o.frequency.exponentialRampToValueAtTime(Math.max(40,f+slide),ac.currentTime+d);
+  v.gain.setValueAtTime(g,ac.currentTime);
+  v.gain.exponentialRampToValueAtTime(0.0001,ac.currentTime+d);
+  o.connect(v).connect(ac.destination);
+  o.start();o.stop(ac.currentTime+d+0.02);
+}
+function sfx(name){
+  if(name==='collect'){beep(660,.07,'square',.045,300);beep(990,.09,'square',.03,200);}
+  if(name==='letter'){beep(523,.1,'triangle',.06,0);setTimeout(()=>beep(784,.12,'triangle',.05),70);}
+  if(name==='hit'){beep(110,.25,'sawtooth',.09,-60);}
+  if(name==='level'){[523,659,784,1046].forEach((f,i)=>setTimeout(()=>beep(f,.14,'triangle',.06),i*90));}
+  if(name==='win'){[523,659,784,1046,1318,1568].forEach((f,i)=>setTimeout(()=>beep(f,.2,'triangle',.06),i*110));}
+  if(name==='over'){[392,330,262,196].forEach((f,i)=>setTimeout(()=>beep(f,.2,'sawtooth',.06),i*140));}
+  if(name==='ui'){beep(880,.05,'square',.03);}
+}
+function pad(on){
+  const ac=audio(); if(!ac)return;
+  if(padNodes){padNodes.g.gain.linearRampToValueAtTime(0,ac.currentTime+.4);setTimeout(()=>{try{padNodes.o1.stop();padNodes.o2.stop();}catch(e){}},500);padNodes=null;}
+  if(on&&!muted){
+    const o1=ac.createOscillator(),o2=ac.createOscillator(),g=ac.createGain(),f=ac.createBiquadFilter();
+    o1.type='sawtooth';o1.frequency.value=55;o2.type='sawtooth';o2.frequency.value=55.6;
+    f.type='lowpass';f.frequency.value=220;
+    g.gain.value=0;g.gain.linearRampToValueAtTime(0.028,ac.currentTime+1.2);
+    o1.connect(f);o2.connect(f);f.connect(g).connect(ac.destination);
+    o1.start();o2.start();
+    padNodes={o1,o2,g};
+  }
+}
+function setMute(m){
+  muted=m;
+  document.getElementById('muteState').textContent=muted?'OFF':'ON';
+  if(muted)pad(false); else if(state==='play')pad(true);
+}
+
+/* ---------------- game state ---------------- */
+const LEVELS=[
+  {act:'ACT I',name:'RAW SIGNAL',color:'#37e0ff',dur:34},
+  {act:'ACT II',name:'FEATURE EXTRACTION',color:'#ff7a3d',dur:38},
+  {act:'ACT III',name:'THE MODEL',color:'#9a6bff',dur:42},
+];
+const SKILLS=['PyTorch','scikit-learn','TensorFlow','BERT','NLP','Python','SQL','pandas','NumPy','Power BI','OpenCV','Git','REST APIs','Jupyter','Computer Vision','Feature Eng.','MySQL','matplotlib'];
+const LETTERS=['S','A','Y','E','R'];
+const PROJECTS=[
+  {key:'alz',title:"Alzheimer's detection from speech",meta:'feature presentation · MSc dissertation · DementiaBank Pitt Corpus',
+   desc:"Complete, reproducible research pipeline: acoustic (MFCC) + linguistic features, classical ML vs deep learning, evaluated on precision, recall and F1.",
+   stat1:['82%','model accuracy'],stat2:['78%','dissertation grade'],
+   tags:['Python','scikit-learn','PyTorch','MFCC','Healthcare AI'],
+   url:'https://github.com/BaburshahSayer/alzheimers-speech-detection'},
+  {key:'edge',title:'Real-time object detection & tracking',meta:'computer vision · edge computing',
+   desc:'Lightweight multi-object detection and tracking for edge devices — YOLOv5 + the SORT algorithm, tuned for minimal latency.',
+   stat1:['YOLOv5','detector'],stat2:['SORT','tracker'],
+   tags:['PyTorch','OpenCV','YOLOv5','Edge'],
+   url:'https://github.com/BaburshahSayer/edge-lite-object-tracker'},
+  {key:'sent',title:'Sentiment analysis: LR vs BERT',meta:'natural language processing',
+   desc:'Logistic Regression and BERT-based classifiers, implemented and compared head-to-head across multiple datasets.',
+   stat1:['LR','baseline'],stat2:['BERT','challenger'],
+   tags:['Python','BERT','NLP','scikit-learn'],
+   url:'https://github.com/BaburshahSayer/face_recognition'},
+];
+
+let state='menu';          // menu | play | card | over | win | folio
+let level=0, lt=0;         // level time
+let score=0, combo=0, comboT=0, hiScore=+(function(){try{return localStorage.getItem('sr_hi')||0}catch(e){return 0}})();
+let hp=3, inv=0;
+let skillsGot=0, lettersGot=0, projectsGot=0;
+let shake=0, frame=0, lastT=0;
+let pendingAfterCard=null;
+let speedMul=1;
+
+const player={x:0,y:0,tx:0,ty:0,r:11,trail:[]};
+let obstacles=[],pickups=[],parts=[],floats=[];
+let spawnT=0, wallT=0, projSpawned=[], letterSpawned=[];
+
+document.getElementById('hiScore').textContent=hiScore;
+
+/* ---------------- input ---------------- */
+const keys={};
+addEventListener('keydown',e=>{
+  keys[e.key.toLowerCase()]=true;
+  if(e.key==='Escape')togglePause();
+  if(e.key.toLowerCase()==='m'){setMute(!muted);sfx('ui');}
+  if(e.key.toLowerCase()==='p'&&(state==='play'||state==='menu'))enterFolio();
+  if(e.key==='Enter'){
+    if(state==='card')closeCard();
+    else if(state==='menu')startGame();
+  }
+});
+addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
+let pointerActive=false;
+function setPointer(e){
+  const t=e.touches?e.touches[0]:e;
+  player.tx=t.clientX; player.ty=t.clientY;
+}
+addEventListener('mousemove',e=>{if(state==='play')setPointer(e);});
+addEventListener('touchstart',e=>{if(state==='play'){pointerActive=true;setPointer(e);e.preventDefault();}},{passive:false});
+addEventListener('touchmove',e=>{if(state==='play'){setPointer(e);e.preventDefault();}},{passive:false});
+addEventListener('touchend',()=>pointerActive=false);
+
+/* ---------------- helpers ---------------- */
+const R=(a,b)=>a+Math.random()*(b-a);
+function toast(big,small){
+  const el=document.getElementById('toast');
+  el.innerHTML=big+(small?'<small>'+small+'</small>':'');
+  el.classList.add('show');
+  clearTimeout(toast._t);
+  toast._t=setTimeout(()=>el.classList.remove('show'),1100);
+}
+function burst(x,y,color,n=14,sp=4){
+  for(let i=0;i<n;i++){
+    const a=Math.random()*Math.PI*2,s=R(1,sp);
+    parts.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:R(.4,.9),c:color,r:R(1.5,3.5)});
+  }
+}
+function floatText(x,y,txt,c){floats.push({x,y,txt,c,life:1});}
+function addScore(n){
+  combo++; comboT=2.2;
+  const gain=n*Math.min(5,1+Math.floor(combo/4));
+  score+=gain;
+  return gain;
+}
+
+/* ---------------- spawning ---------------- */
+function spawnLevelInit(){
+  obstacles=[];pickups=[];spawnT=0;wallT=0;projSpawned=[];letterSpawned=[];
+  player.x=W*0.22;player.y=H*0.5;player.tx=player.x;player.ty=player.y;player.trail=[];
+  lt=0;
+}
+function spawn(dt){
+  spawnT-=dt;
+  const L=LEVELS[level];
+  const prog=lt/L.dur;
+  const v=(170+level*40)*speedMul;
+
+  if(spawnT<=0){
+    spawnT=R(0.5,0.95)-level*0.06;
+    /* obstacles */
+    const kind=Math.random();
+    if(level===0){
+      obstacles.push({type:'noise',x:W+30,y:R(40,H-40),r:R(12,22),vx:-v*R(.9,1.3),vy:R(-30,30),wob:R(0,6)});
+    }else if(level===1){
+      if(kind<0.6) obstacles.push({type:'noise',x:W+30,y:R(40,H-40),r:R(12,20),vx:-v*R(.9,1.4),vy:R(-40,40),wob:R(0,6)});
+    }else{
+      if(kind<0.5) obstacles.push({type:'drone',x:W+30,y:R(60,H-60),r:15,vx:-v*1.1,vy:0,ph:R(0,6),amp:R(40,110)});
+      else if(kind<0.75) obstacles.push({type:'noise',x:W+30,y:R(40,H-40),r:R(10,18),vx:-v*R(1,1.5),vy:R(-50,50),wob:R(0,6)});
+    }
+    /* pickups: data bits */
+    if(Math.random()<0.75) pickups.push({type:'bit',x:W+30,y:R(50,H-50),r:7,vx:-v,vy:0,ph:R(0,6)});
+    /* skills in act II */
+    if(level===1&&Math.random()<0.5){
+      pickups.push({type:'skill',x:W+30,y:R(60,H-60),r:11,vx:-v*0.95,vy:0,ph:R(0,6),label:SKILLS[(skillsGot+pickups.length)%SKILLS.length]});
+    }
+  }
+  /* spectro walls in act II */
+  if(level===1){
+    wallT-=dt;
+    if(wallT<=0){
+      wallT=R(2.4,3.2);
+      const gapY=R(H*0.22,H*0.78),gapH=R(150,210);
+      obstacles.push({type:'wall',x:W+40,w:46,gapY,gapH,vx:-v});
+    }
+  }
+  /* node lasers in act III */
+  if(level===2){
+    wallT-=dt;
+    if(wallT<=0){
+      wallT=R(2.6,3.4);
+      const y1=R(H*0.15,H*0.45),y2=R(H*0.55,H*0.9);
+      obstacles.push({type:'laser',x:W+40,y1,y2,vx:-v*0.9,on:0,cyc:R(1.2,1.8)});
+    }
+  }
+  /* letters in act I at fixed beats */
+  if(level===0){
+    const beat=Math.floor(prog*6);
+    if(beat>=1&&beat<=5&&!letterSpawned[beat]){
+      letterSpawned[beat]=true;
+      pickups.push({type:'letter',x:W+30,y:R(H*0.25,H*0.75),r:14,vx:-v*0.9,vy:0,ph:0,label:LETTERS[beat-1]});
+    }
+  }
+  /* project artifacts in act III at thirds */
+  if(level===2){
+    const beat=Math.floor(prog*3.6);
+    if(beat>=1&&beat<=3&&!projSpawned[beat]){
+      projSpawned[beat]=true;
+      pickups.push({type:'proj',x:W+30,y:R(H*0.3,H*0.7),r:17,vx:-v*0.85,vy:0,ph:0,idx:beat-1});
+    }
+  }
+}
+
+/* ---------------- update ---------------- */
+function update(dt){
+  frame++;
+  lt+=dt;
+  comboT-=dt; if(comboT<=0)combo=0;
+  inv=Math.max(0,inv-dt);
+  shake=Math.max(0,shake-dt*30);
+
+  /* player control */
+  const ks=240*dt*2.4;
+  if(keys['w']||keys['arrowup'])player.ty-=ks;
+  if(keys['s']||keys['arrowdown'])player.ty+=ks;
+  if(keys['a']||keys['arrowleft'])player.tx-=ks;
+  if(keys['d']||keys['arrowright'])player.tx+=ks;
+  player.tx=Math.min(W*0.6,Math.max(30,player.tx));
+  player.ty=Math.min(H-26,Math.max(26,player.ty));
+  player.x+=(player.tx-player.x)*Math.min(1,dt*10);
+  player.y+=(player.ty-player.y)*Math.min(1,dt*10);
+  player.trail.unshift({x:player.x,y:player.y});
+  if(player.trail.length>26)player.trail.pop();
+
+  spawn(dt);
+
+  /* obstacles */
+  for(const o of obstacles){
+    o.x+=o.vx*dt;
+    if(o.type==='noise'){o.y+=Math.sin(frame*0.05+o.wob)*0.7+ (o.vy||0)*dt;}
+    if(o.type==='drone'){o.y+= Math.cos(frame*0.03+o.ph)*o.amp*dt*0.9;}
+    if(o.type==='laser'){o.on=(o.on+dt)%o.cyc;}
+  }
+  obstacles=obstacles.filter(o=>(o.x+(o.w||o.r||60))>-80);
+
+  /* pickups */
+  for(const p of pickups){p.x+=p.vx*dt;p.y+=Math.sin(frame*0.06+p.ph)*0.6;}
+  pickups=pickups.filter(p=>p.x>-60&&!p.dead);
+
+  /* particles + floats */
+  for(const p of parts){p.x+=p.vx;p.y+=p.vy;p.vy+=0.05;p.life-=dt;}
+  parts=parts.filter(p=>p.life>0);
+  for(const f of floats){f.y-=40*dt;f.life-=dt;}
+  floats=floats.filter(f=>f.life>0);
+
+  /* collisions: pickups */
+  for(const p of pickups){
+    const dx=p.x-player.x,dy=p.y-player.y;
+    if(dx*dx+dy*dy<(p.r+player.r)*(p.r+player.r)){
+      p.dead=true;
+      if(p.type==='bit'){const g=addScore(50);burst(p.x,p.y,'#37e0ff',8,3);floatText(p.x,p.y,'+'+g,'#37e0ff');sfx('collect');}
+      if(p.type==='skill'){skillsGot++;const g=addScore(150);burst(p.x,p.y,'#ffc94d',16,4);floatText(p.x,p.y,p.label,'#ffc94d');toast(p.label,'skill acquired · +'+g);sfx('letter');}
+      if(p.type==='letter'){lettersGot++;const g=addScore(200);burst(p.x,p.y,'#ffc94d',18,5);toast(p.label,'phoneme '+lettersGot+'/5 · +'+g);sfx('letter');}
+      if(p.type==='proj'){projectsGot++;burst(p.x,p.y,'#9a6bff',26,5);sfx('level');openProjectCard(p.idx);}
+    }
+  }
+  /* collisions: obstacles */
+  if(inv<=0){
+    for(const o of obstacles){
+      let hit=false;
+      if(o.type==='noise'||o.type==='drone'){
+        const dx=o.x-player.x,dy=o.y-player.y;
+        hit=dx*dx+dy*dy<(o.r+player.r-3)*(o.r+player.r-3);
+      }else if(o.type==='wall'){
+        if(player.x+player.r>o.x&&player.x-player.r<o.x+o.w){
+          if(player.y-player.r<o.gapY-o.gapH/2||player.y+player.r>o.gapY+o.gapH/2)hit=true;
+        }
+      }else if(o.type==='laser'){
+        const active=o.on>o.cyc*0.45;
+        if(active&&Math.abs(player.x-o.x)<10&&player.y>o.y1&&player.y<o.y2)hit=true;
+      }
+      if(hit){damage();break;}
+    }
+  }
+
+  /* level progress */
+  if(lt>=LEVELS[level].dur){
+    sfx('level');
+    if(level===0)openCard(cardAct1Done,()=>{level=1;spawnLevelInit();});
+    else if(level===1)openCard(cardAct2Done,()=>{level=2;spawnLevelInit();});
+    else winGame();
+  }
+}
+function damage(){
+  hp--;inv=1.4;shake=10;combo=0;
+  burst(player.x,player.y,'#ff3b30',24,6);
+  sfx('hit');
+  renderHP();
+  if(hp<=0)gameOver();
+}
+
+/* ---------------- drawing ---------------- */
+function bg(){
+  const L=LEVELS[level];
+  ctx.fillStyle='#04060a';
+  ctx.fillRect(0,0,W,H);
+  /* parallax per act */
+  if(level===0){
+    ctx.strokeStyle='rgba(55,224,255,0.10)';ctx.lineWidth=1;
+    for(let k=0;k<3;k++){
+      ctx.beginPath();
+      const off=(frame*(1.4+k))%W;
+      for(let x=0;x<=W;x+=8){
+        const t=((x+off)/W)*8+k*2;
+        const y=H/2+Math.sin(t*2.1)*Math.sin(t*0.7)*(H*0.16)*(1-k*0.25);
+        x?ctx.lineTo(x,y):ctx.moveTo(x,y);
+      }
+      ctx.stroke();
+    }
+  }else if(level===1){
+    for(let c=0;c<24;c++){
+      const x=((c*70)-(frame*2.2)%70+70)%(W+70)-35;
+      const inten=0.5+0.5*Math.sin(c*1.7+frame*0.02);
+      ctx.fillStyle='rgba(255,122,61,'+(0.05+inten*0.05)+')';
+      const h=H*(0.2+inten*0.5);
+      ctx.fillRect(x,H-h,30,h);
+    }
+  }else{
+    ctx.fillStyle='rgba(154,107,255,0.5)';
+    for(let i=0;i<26;i++){
+      const x=((i*149)%W+W-(frame*0.7)%W)%W;
+      const y=(i*97)%H;
+      ctx.globalAlpha=0.25;
+      ctx.beginPath();ctx.arc(x,y,2.4,0,7);ctx.fill();
+      ctx.globalAlpha=0.07;
+      ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(((i+7)*149)%W,((i+7)*97)%H);
+      ctx.strokeStyle='#9a6bff';ctx.lineWidth=0.5;ctx.stroke();
+      ctx.globalAlpha=1;
+    }
+  }
+  /* lane edges */
+  ctx.fillStyle='rgba(255,255,255,0.05)';
+  ctx.fillRect(0,12,W,1);ctx.fillRect(0,H-13,W,1);
+}
+function drawPlayer(){
+  /* waveform tail */
+  ctx.beginPath();
+  for(let i=0;i<player.trail.length;i++){
+    const t=player.trail[i];
+    const a=1-i/player.trail.length;
+    const y=t.y+Math.sin(frame*0.5+i*0.8)*6*a;
+    i?ctx.lineTo(t.x,y):ctx.moveTo(t.x,y);
+  }
+  ctx.strokeStyle='rgba(55,224,255,0.55)';ctx.lineWidth=2;ctx.stroke();
+  /* orb */
+  const blink=inv>0&&Math.floor(frame/4)%2===0;
+  if(!blink){
+    const g=ctx.createRadialGradient(player.x,player.y,1,player.x,player.y,18);
+    g.addColorStop(0,'#fff');g.addColorStop(0.4,'#37e0ff');g.addColorStop(1,'rgba(55,224,255,0)');
+    ctx.fillStyle=g;
+    ctx.beginPath();ctx.arc(player.x,player.y,18,0,7);ctx.fill();
+    ctx.fillStyle='#04131a';
+    ctx.beginPath();ctx.arc(player.x,player.y,6,0,7);ctx.fill();
+  }
+}
+function drawObstacles(){
+  for(const o of obstacles){
+    if(o.type==='noise'){
+      ctx.fillStyle='rgba(255,59,48,0.9)';
+      for(let i=0;i<5;i++){
+        const a=(frame*0.1+i*1.3+o.wob);
+        ctx.fillRect(o.x+Math.cos(a)*o.r*0.5-3,o.y+Math.sin(a*1.3)*o.r*0.5-3,6,6);
+      }
+      ctx.strokeStyle='rgba(255,59,48,0.45)';ctx.lineWidth=1;
+      ctx.strokeRect(o.x-o.r,o.y-o.r,o.r*2,o.r*2);
+    }else if(o.type==='drone'){
+      ctx.strokeStyle='#ff3b30';ctx.lineWidth=2;
+      ctx.beginPath();ctx.arc(o.x,o.y,o.r,0,7);ctx.stroke();
+      ctx.fillStyle='rgba(255,59,48,0.25)';
+      ctx.beginPath();ctx.arc(o.x,o.y,o.r,0,7);ctx.fill();
+      ctx.fillStyle='#ff3b30';
+      ctx.fillRect(o.x-2,o.y-2,4,4);
+    }else if(o.type==='wall'){
+      ctx.fillStyle='rgba(255,122,61,0.8)';
+      ctx.fillRect(o.x,0,o.w,o.gapY-o.gapH/2);
+      ctx.fillRect(o.x,o.gapY+o.gapH/2,o.w,H-(o.gapY+o.gapH/2));
+      ctx.fillStyle='rgba(255,201,77,0.9)';
+      ctx.fillRect(o.x,o.gapY-o.gapH/2-4,o.w,4);
+      ctx.fillRect(o.x,o.gapY+o.gapH/2,o.w,4);
+    }else if(o.type==='laser'){
+      const active=o.on>o.cyc*0.45;
+      ctx.fillStyle='#9a6bff';
+      ctx.beginPath();ctx.arc(o.x,o.y1,6,0,7);ctx.fill();
+      ctx.beginPath();ctx.arc(o.x,o.y2,6,0,7);ctx.fill();
+      if(active){
+        ctx.strokeStyle='rgba(255,59,48,0.95)';ctx.lineWidth=4;
+        ctx.beginPath();ctx.moveTo(o.x,o.y1);ctx.lineTo(o.x,o.y2);ctx.stroke();
+        ctx.strokeStyle='rgba(255,255,255,0.7)';ctx.lineWidth=1.4;
+        ctx.beginPath();ctx.moveTo(o.x,o.y1);ctx.lineTo(o.x,o.y2);ctx.stroke();
+      }else{
+        ctx.strokeStyle='rgba(154,107,255,0.3)';ctx.lineWidth=1;
+        ctx.setLineDash([4,7]);
+        ctx.beginPath();ctx.moveTo(o.x,o.y1);ctx.lineTo(o.x,o.y2);ctx.stroke();
+        ctx.setLineDash([]);
+      }
+    }
+  }
+}
+function drawPickups(){
+  for(const p of pickups){
+    if(p.type==='bit'){
+      ctx.fillStyle='#37e0ff';
+      ctx.save();ctx.translate(p.x,p.y);ctx.rotate(frame*0.06);
+      ctx.fillRect(-4,-4,8,8);ctx.restore();
+    }else if(p.type==='skill'){
+      ctx.fillStyle='rgba(255,201,77,0.16)';
+      ctx.strokeStyle='#ffc94d';ctx.lineWidth=1.4;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r+3+Math.sin(frame*0.15)*2,0,7);ctx.fill();ctx.stroke();
+      ctx.fillStyle='#ffc94d';
+      ctx.font='600 9px "IBM Plex Mono"';ctx.textAlign='center';
+      ctx.fillText('◆',p.x,p.y+3);
+    }else if(p.type==='letter'){
+      ctx.strokeStyle='#ffc94d';ctx.lineWidth=2;
+      ctx.strokeRect(p.x-13,p.y-13,26,26);
+      ctx.fillStyle='#ffc94d';
+      ctx.font='400 17px Anton';ctx.textAlign='center';
+      ctx.fillText(p.label,p.x,p.y+6);
+    }else if(p.type==='proj'){
+      ctx.save();ctx.translate(p.x,p.y);ctx.rotate(frame*0.04);
+      ctx.strokeStyle='#9a6bff';ctx.lineWidth=2;
+      ctx.strokeRect(-13,-13,26,26);
+      ctx.rotate(Math.PI/4);
+      ctx.strokeRect(-13,-13,26,26);
+      ctx.restore();
+      ctx.fillStyle='#fff';
+      ctx.font='400 11px Anton';ctx.textAlign='center';
+      ctx.fillText('★',p.x,p.y+4);
+    }
+  }
+}
+function drawFX(){
+  for(const p of parts){
+    ctx.globalAlpha=Math.max(0,p.life);
+    ctx.fillStyle=p.c;
+    ctx.fillRect(p.x,p.y,p.r,p.r);
+  }
+  ctx.globalAlpha=1;
+  ctx.font='600 12px "IBM Plex Mono"';ctx.textAlign='center';
+  for(const f of floats){
+    ctx.globalAlpha=Math.max(0,f.life);
+    ctx.fillStyle=f.c;
+    ctx.fillText(f.txt,f.x,f.y);
+  }
+  ctx.globalAlpha=1;
+}
+function render(){
+  ctx.save();
+  if(shake>0&&!reduce)ctx.translate(R(-shake,shake)*0.5,R(-shake,shake)*0.5);
+  bg();drawPickups();drawObstacles();drawPlayer();drawFX();
+  ctx.restore();
+}
+
+/* ---------------- HUD ---------------- */
+const scoreEl=document.getElementById('score'),comboEl=document.getElementById('combo'),
+      progEl=document.getElementById('prog'),actEl=document.getElementById('actName'),
+      stageEl=document.getElementById('stageName'),hpEl=document.getElementById('hp');
+function renderHP(){
+  hpEl.innerHTML='';
+  for(let i=0;i<3;i++){const d=document.createElement('div');d.className='hp'+(i<hp?'':' off');hpEl.appendChild(d);}
+}
+function hud(){
+  scoreEl.textContent=score;
+  comboEl.textContent=combo>=4?('x'+Math.min(5,1+Math.floor(combo/4))+' combo'):'';
+  const L=LEVELS[level];
+  actEl.textContent=L.act;stageEl.textContent=L.name;
+  progEl.style.width=Math.min(100,(lt/L.dur)*100)+'%';
+  progEl.style.background=L.color;
+}
+
+/* ---------------- loop ---------------- */
+function loop(t){
+  const dt=Math.min(0.033,(t-lastT)/1000||0.016);
+  lastT=t;
+  if(state==='play'){update(dt);render();hud();}
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+/* ---------------- cards / overlays ---------------- */
+const ovMenu=document.getElementById('menu'),ovPause=document.getElementById('pause'),
+      ovCard=document.getElementById('card'),cardBox=document.getElementById('cardBox'),
+      ovOver=document.getElementById('over'),ovWin=document.getElementById('win');
+function hideAll(){[ovMenu,ovPause,ovCard,ovOver,ovWin].forEach(o=>o.classList.remove('on'));}
+
+function openCard(html,after){
+  state='card';pendingAfterCard=after||null;
+  cardBox.innerHTML=html+'<div class="press" style="text-align:center">press enter / tap to continue</div>';
+  ovCard.classList.add('on');
+  pad(false);
+}
+function closeCard(){
+  if(state!=='card')return;
+  ovCard.classList.remove('on');
+  const fn=pendingAfterCard;pendingAfterCard=null;
+  state='play';pad(true);
+  if(fn)fn();
+}
+ovCard.addEventListener('click',e=>{ if(e.target.closest('a'))return; closeCard(); });
+
+const cardAct1Done=`
+  <div style="text-align:center"><span class="tag">act i clear · signal acquired</span></div>
+  <h2 style="text-align:center">You caught the <span class="t-signal">name in the noise</span></h2>
+  <p class="lede" style="text-align:center"><b>S·A·Y·E·R</b> — Babur Shah Sayer. ML engineer &amp; AI researcher, MSc Artificial Intelligence (University of Essex). He builds systems that listen: NLP, speech processing, healthcare AI. His dissertation model hears <b>Alzheimer's disease in a voice — 82% accuracy</b>. Supervisor's verdict: <b>"above MSc level."</b></p>
+  <p class="lede" style="text-align:center;color:var(--dim);font-size:12px">Next: the wave shatters into features. Watch for the orange walls — fly through the gaps and grab the golden skill chips.</p>`;
+
+function cardAct2Done(){
+  const cells=[
+    ['ML & AI',['scikit-learn','PyTorch','TensorFlow','BERT','NLP','Computer Vision']],
+    ['Languages',['Python','SQL','JavaScript','PHP']],
+    ['Data',['pandas','NumPy','EDA','Feature Engineering','Power BI','matplotlib']],
+    ['Engineering',['Git','REST APIs','Jupyter','Vue.js','Laravel','MySQL']],
+  ];
+  return `
+  <div style="text-align:center"><span class="tag heat">act ii clear · features extracted</span></div>
+  <h2 style="text-align:center">Inventory: <span class="t-heat">${skillsGot} skills collected</span></h2>
+  <p class="lede" style="text-align:center">You grabbed ${skillsGot} in flight — here's the full feature vector:</p>
+  <div class="grid">${cells.map(c=>`<div class="cell"><div class="cn">${c[0]}</div><div class="chips">${c[1].map(s=>`<span class="chip got">${s}</span>`).join('')}</div></div>`).join('')}</div>
+  <p class="lede" style="text-align:center;color:var(--dim);font-size:12px;margin-top:1rem">Final act: the network. Lasers pulse between nodes — cross them only when they sleep. Recover the three ★ project artifacts.</p>`;
+}
+
+function openProjectCard(idx){
+  const p=PROJECTS[idx];
+  openCard(`
+    <div style="text-align:center"><span class="tag neural">artifact ${idx+1}/3 recovered</span></div>
+    <div class="proj-meta" style="text-align:center"><i>${p.meta}</i></div>
+    <h2 style="text-align:center">${p.title}</h2>
+    <p class="lede" style="text-align:center">${p.desc}</p>
+    <div class="stats">
+      <div class="stat"><div class="n">${p.stat1[0]}</div><div class="l">${p.stat1[1]}</div></div>
+      <div class="stat"><div class="n">${p.stat2[0]}</div><div class="l">${p.stat2[1]}</div></div>
+    </div>
+    <div style="display:flex;justify-content:center;flex-wrap:wrap;gap:6px">${p.tags.map(t=>`<span class="chip got">${t}</span>`).join('')}</div>
+    <div class="btn-row"><a class="btn btn-wire" href="${p.url}" target="_blank" rel="noopener">view on GitHub ↗</a></div>
+  `);
+}
+
+/* ---------------- flow ---------------- */
+function startGame(){
+  audio(); if(AC&&AC.state==='suspended')AC.resume();
+  hideAll();
+  document.getElementById('hud').classList.add('on');
+  level=0;score=0;combo=0;hp=3;skillsGot=0;lettersGot=0;projectsGot=0;
+  spawnLevelInit();renderHP();
+  state='play';pad(true);
+  sfx('level');
+  toast('ACT I — RAW SIGNAL','you are the voice · dodge the red noise');
+}
+function retryAct(){
+  hideAll();hp=3;renderHP();spawnLevelInit();
+  state='play';pad(true);
+  toast(LEVELS[level].act+' — '+LEVELS[level].name,'retry · the pipeline forgives');
+}
+function togglePause(){
+  if(state==='play'){state='pause';ovPause.classList.add('on');pad(false);}
+  else if(state==='pause'){state='play';ovPause.classList.remove('on');pad(true);}
+}
+function gameOver(){
+  state='over';pad(false);sfx('over');
+  document.getElementById('overScore').textContent=score;
+  document.getElementById('overStage').textContent=LEVELS[level].act;
+  ovOver.classList.add('on');
+}
+function winGame(){
+  state='win';pad(false);sfx('win');
+  document.getElementById('hud').classList.remove('on');
+  if(score>hiScore){hiScore=score;try{localStorage.setItem('sr_hi',hiScore);}catch(e){}}
+  document.getElementById('winScore').textContent=score;
+  document.getElementById('winSkills').textContent=skillsGot;
+  ovWin.classList.add('on');
+  /* count the verdict up to 82% */
+  const vn=document.getElementById('verdictNum');
+  const t0=performance.now();
+  (function count(now){
+    const p=Math.min(1,(now-t0)/1800);
+    vn.textContent=Math.round(p*82)+'%';
+    if(p<1)requestAnimationFrame(count);
+    else{
+      for(let i=0;i<3;i++)setTimeout(()=>{burst(R(W*0.2,W*0.8),R(H*0.2,H*0.6),'#ffc94d',30,7);render();},i*180);
+    }
+  })(t0);
+  /* speak the verdict */
+  if('speechSynthesis' in window&&!muted){
+    try{
+      const u=new SpeechSynthesisUtterance('Classification complete. Babur Shah Sayer. Strong hire.');
+      u.rate=0.95;
+      speechSynthesis.cancel();speechSynthesis.speak(u);
+    }catch(e){}
+  }
+}
+function enterFolio(){
+  state='folio';pad(false);hideAll();
+  document.getElementById('hud').classList.remove('on');
+  document.body.classList.add('folio-mode');
+  scrollTo(0,0);
+}
+function exitFolio(){
+  document.body.classList.remove('folio-mode');
+  state='menu';hideAll();ovMenu.classList.add('on');
+}
+
+/* card act2 helper passing string vs function */
+const _openCard=openCard;
+openCard=function(html,after){
+  _openCard(typeof html==='function'?html():html,after);
+};
+
+/* ---------------- buttons ---------------- */
+document.getElementById('playBtn').addEventListener('click',()=>{sfx('ui');startGame();});
+document.getElementById('skipBtn').addEventListener('click',()=>{sfx('ui');enterFolio();});
+document.getElementById('resumeBtn').addEventListener('click',()=>{sfx('ui');togglePause();});
+document.getElementById('pauseSkipBtn').addEventListener('click',()=>{sfx('ui');enterFolio();});
+document.getElementById('retryBtn').addEventListener('click',()=>{sfx('ui');retryAct();});
+document.getElementById('overSkipBtn').addEventListener('click',()=>{sfx('ui');enterFolio();});
+document.getElementById('againBtn').addEventListener('click',()=>{sfx('ui');startGame();});
+document.getElementById('winFolioBtn').addEventListener('click',()=>{sfx('ui');enterFolio();});
+document.getElementById('backToGame').addEventListener('click',()=>{sfx('ui');exitFolio();});
+
+/* draw an attract-mode background behind the menu */
+(function attract(){
+  if(state==='menu'){
+    ctx.fillStyle='#04060a';ctx.fillRect(0,0,W,H);
+    ctx.strokeStyle='rgba(55,224,255,0.12)';ctx.lineWidth=1;
+    const t=performance.now()*0.001;
+    for(let k=0;k<3;k++){
+      ctx.beginPath();
+      for(let x=0;x<=W;x+=8){
+        const u=x/W*8+t*(1+k*0.4);
+        const y=H/2+Math.sin(u*2.1)*Math.sin(u*0.7)*(H*0.18)*(1-k*0.25);
+        x?ctx.lineTo(x,y):ctx.moveTo(x,y);
+      }
+      ctx.stroke();
+    }
+  }
+  requestAnimationFrame(attract);
+})();
+})();
+</script>
 </body>
 </html>
