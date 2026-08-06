@@ -239,7 +239,7 @@ body.folio-mode canvas#game,body.folio-mode .crt,body.folio-mode .vig{display:no
     <div class="run-stats">
       <span>score <b id="winScore">0</b></span>
       <span>skills collected <b id="winSkills">0</b></span>
-      <span>projects recovered <b>3/3</b></span>
+      <span>projects recovered <b>4/4</b></span>
     </div>
     <p class="lede">You just ran the same journey my dissertation runs on every voice: <b>signal → features → model → verdict</b>. The model scored 82%. You scored the demo. The sequel is an email away.</p>
     <div class="btn-row">
@@ -261,16 +261,23 @@ body.folio-mode canvas#game,body.folio-mode .crt,body.folio-mode .vig{display:no
     <section>
       <div class="f-head">dossier · 00 / signal</div>
       <h1>Babur Shah <span class="t-signal">Sayer</span></h1>
-      <p class="lede" style="margin:1rem 0 0">ML Engineer &amp; AI Researcher — NLP, speech processing, healthcare AI. <b>MSc Artificial Intelligence, University of Essex.</b> Built an end-to-end pipeline detecting Alzheimer's disease from speech at <b>82% accuracy</b> (dissertation graded 78%, supervisor: "above MSc level"). Full right to work in the UK · Manchester / Preston / remote.</p>
+      <p class="lede" style="margin:1rem 0 0">ML Engineer &amp; AI Researcher — NLP, speech processing, healthcare AI. <b>MSc Computing (Merit), University of Essex.</b> Built an end-to-end pipeline detecting Alzheimer's disease from speech at <b>82% accuracy</b> (dissertation graded 78%, supervisor: "above MSc level"). Currently building and shipping <b>CVSender</b>, a live AI job-application product, solo. Full right to work in the UK · Preston / Manchester / remote.</p>
       <div class="btn-row" style="justify-content:flex-start">
         <a class="btn btn-solid" href="mailto:babursayer@gmail.com">Get in touch</a>
         <a class="btn btn-wire" href="https://github.com/BaburshahSayer" target="_blank" rel="noopener">GitHub ↗</a>
         <a class="btn btn-wire" href="https://www.linkedin.com/in/babur-sayer-79b0161b1/" target="_blank" rel="noopener">LinkedIn ↗</a>
+        <a class="btn btn-wire" href="https://cvsender.co.uk" target="_blank" rel="noopener">CVSender ↗</a>
       </div>
     </section>
     <section>
       <div class="f-head">dossier · 01 / projects</div>
       <div class="films">
+        <a class="film" href="https://cvsender.co.uk" target="_blank" rel="noopener">
+          <div class="proj-meta"><i>live product</i> · solo founder &amp; ML engineer · Dec 2025 – present</div>
+          <h3>CVSender</h3>
+          <p>An AI-powered job-application platform, built and run solo end to end. Pulls live job listings, scores genuine candidate-role fit, tailors CVs and cover letters via the Claude API with a strict no-fabrication rule, and tracks every application in one place.</p>
+          <div class="tags"><span class="tg">Next.js</span><span class="tg">Supabase</span><span class="tg">Stripe</span><span class="tg">Claude API</span><span class="tg">TypeScript</span></div>
+        </a>
         <a class="film" href="https://github.com/BaburshahSayer/alzheimers-speech-detection" target="_blank" rel="noopener">
           <div class="proj-meta"><i>feature presentation</i> · MSc dissertation · DementiaBank Pitt Corpus</div>
           <h3>Alzheimer's detection from speech</h3>
@@ -297,13 +304,13 @@ body.folio-mode canvas#game,body.folio-mode .crt,body.folio-mode .vig{display:no
         <div class="cell"><div class="cn">ML &amp; AI</div><div class="chips"><span class="chip">scikit-learn</span><span class="chip">PyTorch</span><span class="chip">TensorFlow</span><span class="chip">BERT</span><span class="chip">NLP</span><span class="chip">Computer Vision</span></div></div>
         <div class="cell"><div class="cn">Languages</div><div class="chips"><span class="chip">Python</span><span class="chip">SQL</span><span class="chip">JavaScript</span><span class="chip">PHP</span></div></div>
         <div class="cell"><div class="cn">Data</div><div class="chips"><span class="chip">pandas</span><span class="chip">NumPy</span><span class="chip">EDA</span><span class="chip">Feature Engineering</span><span class="chip">Power BI</span><span class="chip">matplotlib</span></div></div>
-        <div class="cell"><div class="cn">Engineering</div><div class="chips"><span class="chip">Git</span><span class="chip">REST APIs</span><span class="chip">Jupyter</span><span class="chip">Vue.js</span><span class="chip">Laravel</span><span class="chip">MySQL</span></div></div>
+        <div class="cell"><div class="cn">Product &amp; Engineering</div><div class="chips"><span class="chip">Next.js</span><span class="chip">Supabase</span><span class="chip">Stripe</span><span class="chip">Git</span><span class="chip">REST APIs</span><span class="chip">Jupyter</span></div></div>
       </div>
     </section>
     <section>
       <div class="f-head">dossier · 03 / background</div>
-      <p class="lede" style="margin:0 0 1rem">My dissertation on Alzheimer's detection from spontaneous speech was described by my supervisor as showing <b>methodological maturity above what is typically expected at MSc level</b>. Before the Masters I spent nearly three years as a <b>Business and Data Analyst</b>, delivering KPI reports and data pipelines in production — I turn data into decisions, not just notebooks.</p>
-      <p class="lede" style="margin:0">I have <b>full right to work in the UK</b> and I'm actively looking for junior or graduate ML, NLP or data-science roles — remote, hybrid, or in person near Manchester or Preston.</p>
+      <p class="lede" style="margin:0 0 1rem">My dissertation on Alzheimer's detection from spontaneous speech was described by my supervisor as showing <b>methodological maturity above what is typically expected at MSc level</b>. Before the Masters I spent nearly three years as a <b>Full Stack Developer</b> at HonestPoint, building internal reporting tools and cutting reporting errors by ~35% — I turn data into decisions, not just notebooks. Since graduating I've been building <b>CVSender</b> solo, from ML logic to infrastructure.</p>
+      <p class="lede" style="margin:0">I have <b>full right to work in the UK</b> (no visa sponsorship required) and I'm actively looking for junior or graduate ML, data, or software roles — remote, hybrid, or in person near Preston or Manchester.</p>
     </section>
   </div>
 </div>
@@ -377,21 +384,26 @@ const LEVELS=[
 const SKILLS=['PyTorch','scikit-learn','TensorFlow','BERT','NLP','Python','SQL','pandas','NumPy','Power BI','OpenCV','Git','REST APIs','Jupyter','Computer Vision','Feature Eng.','MySQL','matplotlib'];
 const LETTERS=['S','A','Y','E','R'];
 const PROJECTS=[
+  {key:'cvsender',title:'CVSender',meta:'live product · solo founder & ML engineer · Dec 2025 – present',
+   desc:"An AI-powered job-application platform, built and run solo end to end — job discovery, honest fit-scoring, CV/cover-letter tailoring via the Claude API, and application tracking.",
+   stat1:['Live','shipped product'],stat2:['Solo','built end to end'],
+   tags:['Next.js','Supabase','Stripe','Claude API'],
+   url:'https://cvsender.co.uk',linkLabel:'visit cvsender.co.uk ↗'},
   {key:'alz',title:"Alzheimer's detection from speech",meta:'feature presentation · MSc dissertation · DementiaBank Pitt Corpus',
    desc:"Complete, reproducible research pipeline: acoustic (MFCC) + linguistic features, classical ML vs deep learning, evaluated on precision, recall and F1.",
    stat1:['82%','model accuracy'],stat2:['78%','dissertation grade'],
    tags:['Python','scikit-learn','PyTorch','MFCC','Healthcare AI'],
-   url:'https://github.com/BaburshahSayer/alzheimers-speech-detection'},
+   url:'https://github.com/BaburshahSayer/alzheimers-speech-detection',linkLabel:'view on GitHub ↗'},
   {key:'edge',title:'Real-time object detection & tracking',meta:'computer vision · edge computing',
    desc:'Lightweight multi-object detection and tracking for edge devices — YOLOv5 + the SORT algorithm, tuned for minimal latency.',
    stat1:['YOLOv5','detector'],stat2:['SORT','tracker'],
    tags:['PyTorch','OpenCV','YOLOv5','Edge'],
-   url:'https://github.com/BaburshahSayer/edge-lite-object-tracker'},
+   url:'https://github.com/BaburshahSayer/edge-lite-object-tracker',linkLabel:'view on GitHub ↗'},
   {key:'sent',title:'Sentiment analysis: LR vs BERT',meta:'natural language processing',
    desc:'Logistic Regression and BERT-based classifiers, implemented and compared head-to-head across multiple datasets.',
    stat1:['LR','baseline'],stat2:['BERT','challenger'],
    tags:['Python','BERT','NLP','scikit-learn'],
-   url:'https://github.com/BaburshahSayer/face_recognition'},
+   url:'https://github.com/BaburshahSayer/face_recognition',linkLabel:'view on GitHub ↗'},
 ];
 
 let state='menu';          // menu | play | card | over | win | folio
@@ -512,10 +524,11 @@ function spawn(dt){
       pickups.push({type:'letter',x:W+30,y:R(H*0.25,H*0.75),r:14,vx:-v*0.9,vy:0,ph:0,label:LETTERS[beat-1]});
     }
   }
-  /* project artifacts in act III at thirds */
+  /* project artifacts in act III, spaced across PROJECTS.length beats */
   if(level===2){
-    const beat=Math.floor(prog*3.6);
-    if(beat>=1&&beat<=3&&!projSpawned[beat]){
+    const totalProj=PROJECTS.length;
+    const beat=Math.floor(prog*(totalProj+0.6));
+    if(beat>=1&&beat<=totalProj&&!projSpawned[beat]){
       projSpawned[beat]=true;
       pickups.push({type:'proj',x:W+30,y:R(H*0.3,H*0.7),r:17,vx:-v*0.85,vy:0,ph:0,idx:beat-1});
     }
@@ -821,7 +834,7 @@ ovCard.addEventListener('click',e=>{ if(e.target.closest('a'))return; closeCard(
 const cardAct1Done=`
   <div style="text-align:center"><span class="tag">act i clear · signal acquired</span></div>
   <h2 style="text-align:center">You caught the <span class="t-signal">name in the noise</span></h2>
-  <p class="lede" style="text-align:center"><b>S·A·Y·E·R</b> — Babur Shah Sayer. ML engineer &amp; AI researcher, MSc Artificial Intelligence (University of Essex). He builds systems that listen: NLP, speech processing, healthcare AI. His dissertation model hears <b>Alzheimer's disease in a voice — 82% accuracy</b>. Supervisor's verdict: <b>"above MSc level."</b></p>
+  <p class="lede" style="text-align:center"><b>S·A·Y·E·R</b> — Babur Shah Sayer. ML engineer &amp; AI researcher, MSc Computing (Merit, University of Essex). He builds systems that listen: NLP, speech processing, healthcare AI. His dissertation model hears <b>Alzheimer's disease in a voice — 82% accuracy</b>. Supervisor's verdict: <b>"above MSc level."</b></p>
   <p class="lede" style="text-align:center;color:var(--dim);font-size:12px">Next: the wave shatters into features. Watch for the orange walls — fly through the gaps and grab the golden skill chips.</p>`;
 
 function cardAct2Done(){
@@ -829,20 +842,20 @@ function cardAct2Done(){
     ['ML & AI',['scikit-learn','PyTorch','TensorFlow','BERT','NLP','Computer Vision']],
     ['Languages',['Python','SQL','JavaScript','PHP']],
     ['Data',['pandas','NumPy','EDA','Feature Engineering','Power BI','matplotlib']],
-    ['Engineering',['Git','REST APIs','Jupyter','Vue.js','Laravel','MySQL']],
+    ['Product & Engineering',['Next.js','Supabase','Stripe','Git','REST APIs','Jupyter']],
   ];
   return `
   <div style="text-align:center"><span class="tag heat">act ii clear · features extracted</span></div>
   <h2 style="text-align:center">Inventory: <span class="t-heat">${skillsGot} skills collected</span></h2>
   <p class="lede" style="text-align:center">You grabbed ${skillsGot} in flight — here's the full feature vector:</p>
   <div class="grid">${cells.map(c=>`<div class="cell"><div class="cn">${c[0]}</div><div class="chips">${c[1].map(s=>`<span class="chip got">${s}</span>`).join('')}</div></div>`).join('')}</div>
-  <p class="lede" style="text-align:center;color:var(--dim);font-size:12px;margin-top:1rem">Final act: the network. Lasers pulse between nodes — cross them only when they sleep. Recover the three ★ project artifacts.</p>`;
+  <p class="lede" style="text-align:center;color:var(--dim);font-size:12px;margin-top:1rem">Final act: the network. Lasers pulse between nodes — cross them only when they sleep. Recover the four ★ project artifacts.</p>`;
 }
 
 function openProjectCard(idx){
   const p=PROJECTS[idx];
   openCard(`
-    <div style="text-align:center"><span class="tag neural">artifact ${idx+1}/3 recovered</span></div>
+    <div style="text-align:center"><span class="tag neural">artifact ${idx+1}/${PROJECTS.length} recovered</span></div>
     <div class="proj-meta" style="text-align:center"><i>${p.meta}</i></div>
     <h2 style="text-align:center">${p.title}</h2>
     <p class="lede" style="text-align:center">${p.desc}</p>
@@ -851,7 +864,7 @@ function openProjectCard(idx){
       <div class="stat"><div class="n">${p.stat2[0]}</div><div class="l">${p.stat2[1]}</div></div>
     </div>
     <div style="display:flex;justify-content:center;flex-wrap:wrap;gap:6px">${p.tags.map(t=>`<span class="chip got">${t}</span>`).join('')}</div>
-    <div class="btn-row"><a class="btn btn-wire" href="${p.url}" target="_blank" rel="noopener">view on GitHub ↗</a></div>
+    <div class="btn-row"><a class="btn btn-wire" href="${p.url}" target="_blank" rel="noopener">${p.linkLabel||'view on GitHub ↗'}</a></div>
   `);
 }
 
